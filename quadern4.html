@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quadern Digital de Projecte - Enginyeria Biomèdica UOC</title>
     <style>
-        /* ==========================================================================
-           1. VARIABLES CSS (THEMING MODE FOSC / CLAR)
-           ========================================================================== */
         :root {
             --bg-color: #f4f6f9;
             --surface-color: #ffffff;
@@ -37,16 +34,13 @@
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
 
-        /* Basic Reset & Base */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s, color 0.3s; line-height: 1.6; }
         
-        /* Layout Header */
         header { background-color: var(--primary-color); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); }
         header h1 { font-size: 1.5rem; }
         .header-controls { display: flex; gap: 10px; align-items: center; }
         
-        /* Buttons */
         .btn { padding: 0.5rem 1rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; transition: background 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .btn-primary { background-color: var(--primary-color); color: white; }
         .btn-primary:hover { background-color: var(--primary-hover); }
@@ -55,32 +49,26 @@
         .btn-success { background-color: var(--success-color); color: white; }
         .btn-theme { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); font-size: 1.2rem; padding: 0.3rem 0.6rem; }
         
-        /* Navigation Tabs */
         nav { background-color: var(--surface-color); border-bottom: 1px solid var(--border-color); display: flex; overflow-x: auto; }
         nav button { padding: 1rem 1.5rem; border: none; background: none; color: var(--text-muted); font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
         nav button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
-        /* Banner d'avís de privadesa */
         .banner-privacy { background-color: #fff3cd; color: #856404; padding: 0.75rem 2rem; border-bottom: 1px solid #ffeeba; text-align: center; font-size: 0.9rem; font-weight: bold; }
         [data-theme="dark"] .banner-privacy { background-color: #3a3214; color: #ffe58f; border-bottom-color: #524419; }
 
-        /* Container Main */
         main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Targetes / Cards */
         .card { background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
         .card h2 { margin-bottom: 1rem; color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; font-size: 1.25rem; }
 
-        /* Formularis */
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
         .form-control { width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius); background-color: var(--bg-color); color: var(--text-color); }
         .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
         .form-row .form-group { flex: 1; min-width: 200px; }
 
-        /* Kanban Board */
         .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; overflow-x: auto; }
         .kanban-col { background-color: var(--bg-color); border-radius: var(--radius); padding: 1rem; border: 1px solid var(--border-color); }
         .kanban-col h3 { font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
@@ -88,19 +76,16 @@
         .task-card.deadline-overdue { border-left-color: var(--danger-color); background-color: rgba(217, 83, 79, 0.05); }
         .task-card.deadline-urgent { border-left-color: var(--warning-color); }
 
-        /* Subtasques Checklist */
         .subtasks-list { margin-top: 0.75rem; font-size: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 0.5rem; }
         .subtask-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
         .subtask-item.completed span { text-decoration: line-through; color: var(--text-muted); }
 
-        /* Badges */
         .badge { display: inline-block; padding: 0.25em 0.6em; font-size: 75%; font-weight: 700; border-radius: 10px; color: #fff; margin-right: 5px; }
         .badge-success { background-color: var(--success-color); }
         .badge-warning { background-color: var(--warning-color); color: #000; }
         .badge-danger { background-color: var(--danger-color); }
         .badge-info { background-color: var(--info-color); color: #000; }
 
-        /* TOAST NOTIFICATIONS CONTAINER */
         #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { pointer-events: auto; min-width: 250px; padding: 12px 20px; border-radius: var(--radius); color: white; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; animation: slideIn 0.3s ease, fadeOut 0.5s ease 2.7s forwards; }
         .toast-success { background-color: var(--success-color); }
@@ -112,13 +97,9 @@
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
-        /* Modals */
         .modal-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9000; }
         .modal { background: var(--surface-color); padding: 2rem; border-radius: var(--radius); max-width: 500px; width: 90%; box-shadow: var(--shadow); }
 
-        /* ==========================================================================
-           2. ESTILS D'IMPRESSIÓ (@media print)
-           ========================================================================== */
         @media print {
             header, nav, .banner-privacy, .header-controls, .no-print, #toast-container, button, .btn { display: none !important; }
             body { background-color: white !important; color: black !important; font-size: 12pt; }
@@ -133,7 +114,6 @@
 </head>
 <body>
 
-    <!-- Capçalera -->
     <header>
         <div>
             <h1>Quadern Digital de Projecte</h1>
@@ -145,12 +125,10 @@
         </div>
     </header>
 
-    <!-- Avís de Privadesa -->
     <div class="banner-privacy">
         ⚠️ <strong>Atenció:</strong> Prohibit introduir dades sensibles o informació de pacients en aquest quadern digital.
     </div>
 
-    <!-- Navegació per Pestanyes -->
     <nav class="no-print">
         <button class="tab-btn active" onclick="switchTab('info')">Informació General</button>
         <button class="tab-btn" onclick="switchTab('diari')">Diari del Projecte</button>
@@ -160,12 +138,9 @@
         <button class="tab-btn" onclick="switchTab('dades')">Gestió de Dades</button>
     </nav>
 
-    <!-- Contenidor de Toasts -->
     <div id="toast-container"></div>
 
-    <!-- Contingut Principal -->
     <main>
-        <!-- PESTANYA 1: INFORMACIÓ GENERAL -->
         <section id="tab-info" class="tab-content active">
             <div class="card">
                 <h2>Fitxa Tècnica del Projecte</h2>
@@ -196,14 +171,11 @@
                             <th style="padding: 8px;">Correu UOC</th>
                         </tr>
                     </thead>
-                    <tbody id="taula-membres">
-                        <!-- Integració inicial dels 5 membres -->
-                    </tbody>
+                    <tbody id="taula-membres"></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- PESTANYA 2: DIARI DEL PROJECTE -->
         <section id="tab-diari" class="tab-content">
             <div class="card no-print">
                 <h2>Nova Entrada al Diari</h2>
@@ -252,7 +224,6 @@
             </div>
         </section>
 
-        <!-- PESTANYA 3: KANBAN DE TASQUES -->
         <section id="tab-tasques" class="tab-content">
             <div class="card no-print">
                 <h2>Nova Tasca</h2>
@@ -272,7 +243,6 @@
                         </div>
                     </div>
                     
-                    <!-- Bloc Subtasques -->
                     <div class="form-group">
                         <label>Subtasques (Checklist)</label>
                         <div style="display:flex; gap: 10px;">
@@ -286,7 +256,6 @@
                 </form>
             </div>
 
-            <!-- Tauler Kanban -->
             <div class="kanban-board">
                 <div class="kanban-col">
                     <h3>Pendent</h3>
@@ -307,7 +276,6 @@
             </div>
         </section>
 
-        <!-- PESTANYA 4: DASHBOARDS -->
         <section id="tab-dashboards" class="tab-content">
             <div class="card">
                 <h2>Indicadors de Participació</h2>
@@ -318,7 +286,6 @@
             </div>
         </section>
 
-        <!-- PESTANYA 5: HISTORIAL -->
         <section id="tab-historial" class="tab-content">
             <div class="card">
                 <h2>Historial de Canvis (Audit Log)</h2>
@@ -326,7 +293,6 @@
             </div>
         </section>
 
-        <!-- PESTANYA 6: GESTIÓ DE DADES -->
         <section id="tab-dades" class="tab-content">
             <div class="card">
                 <h2>Exportació i Importació de JSON</h2>
@@ -343,7 +309,6 @@
         </section>
     </main>
 
-    <!-- MODAL FUSIÓ JSON -->
     <div id="modal-merge" class="modal-backdrop" style="display:none;">
         <div class="modal">
             <h2>Resum d'Importació JSON</h2>
@@ -356,11 +321,7 @@
         </div>
     </div>
 
-    <!-- ==========================================================================
-       3. LÒGICA JAVASCRIPT (VANILLA ES6+)
-       ========================================================================== -->
     <script>
-        // Integració Inicial dels 5 Membres de la UOC
         const MEMBRES_INICIALS = [
             { id: "m1", nom: "Jana Oltra Arrieta", rol: "Investigadora / Biomedicina", correu: "joltra@uoc.edu" },
             { id: "m2", nom: "Judit Coll Portet", rol: "Coordinadora / Front-End", correu: "jcollpor@uoc.edu" },
@@ -380,7 +341,6 @@
         let tempSubtasquesForm = [];
         let jsonPendingImport = null;
 
-        // --- INICIALITZACIÓ ---
         document.addEventListener('DOMContentLoaded', () => {
             carregarEstat();
             inicialitzarTema();
@@ -411,7 +371,6 @@
             desarEstat();
         }
 
-        /* --- SYSTEMA TOAST NOTIFICATIONS --- */
         function mostrarToast(missatge, tipus = 'info', durada = 3000) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -421,7 +380,6 @@
             setTimeout(() => { if (toast.parentNode) toast.remove(); }, durada);
         }
 
-        /* --- THEME SWITCHER (DARK / LIGHT MODE) --- */
         function inicialitzarTema() {
             const savedTheme = localStorage.getItem('tema_preferit') || 
                 (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -441,15 +399,13 @@
             document.getElementById('theme-btn').innerText = tema === 'dark' ? '🌙' : '☀️';
         }
 
-        /* --- NAVEGACIÓ TABS --- */
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
+            if(event && event.target) event.target.classList.add('active');
             document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        /* --- RENDERITZACIÓ GENERAL --- */
         function renderTot() {
             renderMembres();
             renderSelectsAutors();
@@ -477,7 +433,6 @@
             });
         }
 
-        /* --- DIARI DEL PROJECTE --- */
         function crearEntradaDiari(e) {
             e.preventDefault();
             const entrada = {
@@ -515,7 +470,6 @@
             `).join('');
         }
 
-        /* --- SUBTASQUES I KANBAN (AMB DEADLINES I BADGES) --- */
         function afegirSubtascaForm() {
             const inp = document.getElementById('subtasca-input');
             if (!inp.value.trim()) return;
@@ -627,7 +581,6 @@
             }
         }
 
-        /* --- DASHBOARDS & HISTORIAL --- */
         function renderDashboards() {
             const cont = document.getElementById('metrics-participacio');
             cont.innerHTML = state.membres.map(m => {
@@ -645,7 +598,6 @@
             `).join('');
         }
 
-        /* --- IMPORTACIÓ / EXPORTACIÓ JSON I FUSIÓ INTEL·LIGENT --- */
         function exportarJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
             const a = document.createElement('a');
@@ -690,7 +642,6 @@
         function confirmarFusio(mode) {
             if (!jsonPendingImport) return;
 
-            // 1. Còpia de Seguretat Automàtica (Auto-Backup)
             localStorage.setItem('quadern_backup_pre_import', JSON.stringify(state));
             comprovarBackup();
 
@@ -698,14 +649,13 @@
                 state = jsonPendingImport;
                 registrarAccio("Sobreescriptura completa des de fitxer JSON");
             } else {
-                // Fusió Intel·ligent per ID
                 (jsonPendingImport.diari || []).forEach(item => {
                     if (!state.diari.some(d => d.id === item.id)) state.diari.push(item);
                 });
                 (jsonPendingImport.tasques || []).forEach(item => {
                     const idx = state.tasques.findIndex(t => t.id === item.id);
                     if (idx === -1) state.tasques.push(item);
-                    else state.tasques[idx] = item; // Reemplaça amb versió més recent
+                    else state.tasques[idx] = item;
                 });
                 registrarAccio("Fusió intel·ligent de dades JSON");
             }
