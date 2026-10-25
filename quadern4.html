@@ -54,3 +54,693 @@
         .btn-danger { background-color: var(--danger-color); color: white; }
         .btn-success { background-color: var(--success-color); color: white; }
         .btn-theme { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3); font-size: 1.2rem; padding: 0.3rem 0.6rem; }
+        
+        /* Navigation Tabs */
+        nav { background-color: var(--surface-color); border-bottom: 1px solid var(--border-color); display: flex; overflow-x: auto; }
+        nav button { padding: 1rem 1.5rem; border: none; background: none; color: var(--text-muted); font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
+        nav button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+
+        /* Banner d'avís de privadesa */
+        .banner-privacy { background-color: #fff3cd; color: #856404; padding: 0.75rem 2rem; border-bottom: 1px solid #ffeeba; text-align: center; font-size: 0.9rem; font-weight: bold; }
+        [data-theme="dark"] .banner-privacy { background-color: #3a3214; color: #ffe58f; border-bottom-color: #524419; }
+
+        /* Container Main */
+        main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Targetes / Cards */
+        .card { background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+        .card h2 { margin-bottom: 1rem; color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; font-size: 1.25rem; }
+
+        /* Formularis */
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+        .form-control { width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius); background-color: var(--bg-color); color: var(--text-color); }
+        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; min-width: 200px; }
+
+        /* Kanban Board */
+        .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; overflow-x: auto; }
+        .kanban-col { background-color: var(--bg-color); border-radius: var(--radius); padding: 1rem; border: 1px solid var(--border-color); }
+        .kanban-col h3 { font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+        .task-card { background-color: var(--surface-color); border-left: 4px solid var(--primary-color); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+        .task-card.deadline-overdue { border-left-color: var(--danger-color); background-color: rgba(217, 83, 79, 0.05); }
+        .task-card.deadline-urgent { border-left-color: var(--warning-color); }
+
+        /* Subtasques Checklist */
+        .subtasks-list { margin-top: 0.75rem; font-size: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 0.5rem; }
+        .subtask-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .subtask-item.completed span { text-decoration: line-through; color: var(--text-muted); }
+
+        /* Badges */
+        .badge { display: inline-block; padding: 0.25em 0.6em; font-size: 75%; font-weight: 700; border-radius: 10px; color: #fff; margin-right: 5px; }
+        .badge-success { background-color: var(--success-color); }
+        .badge-warning { background-color: var(--warning-color); color: #000; }
+        .badge-danger { background-color: var(--danger-color); }
+        .badge-info { background-color: var(--info-color); color: #000; }
+
+        /* TOAST NOTIFICATIONS CONTAINER */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { pointer-events: auto; min-width: 250px; padding: 12px 20px; border-radius: var(--radius); color: white; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; animation: slideIn 0.3s ease, fadeOut 0.5s ease 2.7s forwards; }
+        .toast-success { background-color: var(--success-color); }
+        .toast-warning { background-color: var(--warning-color); color: #000; }
+        .toast-error { background-color: var(--danger-color); }
+        .toast-info { background-color: var(--info-color); color: #000; }
+        .toast-close { background: none; border: none; color: inherit; font-size: 1.2rem; cursor: pointer; margin-left: 10px; }
+
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+        /* Modals */
+        .modal-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9000; }
+        .modal { background: var(--surface-color); padding: 2rem; border-radius: var(--radius); max-width: 500px; width: 90%; box-shadow: var(--shadow); }
+
+        /* ==========================================================================
+           2. ESTILS D'IMPRESSIÓ (@media print)
+           ========================================================================== */
+        @media print {
+            header, nav, .banner-privacy, .header-controls, .no-print, #toast-container, button, .btn { display: none !important; }
+            body { background-color: white !important; color: black !important; font-size: 12pt; }
+            main { padding: 0; max-width: 100%; }
+            .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 2rem !important; page-break-inside: avoid; }
+            .tab-content { display: block !important; }
+            .kanban-board { display: block; }
+            .kanban-col { margin-bottom: 1rem; border: 1px solid #ccc; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Capçalera -->
+    <header>
+        <div>
+            <h1>Quadern Digital de Projecte</h1>
+            <small>Enginyeria Biomèdica - UOC</small>
+        </div>
+        <div class="header-controls">
+            <button class="btn btn-secondary no-print" onclick="window.print()">🖨️ PDF / Imprimir</button>
+            <button class="btn btn-theme no-print" onclick="toggleTheme()" id="theme-btn" title="Canviar Mode">☀️</button>
+        </div>
+    </header>
+
+    <!-- Avís de Privadesa -->
+    <div class="banner-privacy">
+        ⚠️ <strong>Atenció:</strong> Prohibit introduir dades sensibles o informació de pacients en aquest quadern digital.
+    </div>
+
+    <!-- Navegació per Pestanyes -->
+    <nav class="no-print">
+        <button class="tab-btn active" onclick="switchTab('info')">Informació General</button>
+        <button class="tab-btn" onclick="switchTab('diari')">Diari del Projecte</button>
+        <button class="tab-btn" onclick="switchTab('tasques')">Gestió de Tasques</button>
+        <button class="tab-btn" onclick="switchTab('dashboards')">Seguiment i Indicadors</button>
+        <button class="tab-btn" onclick="switchTab('historial')">Historial de Canvis</button>
+        <button class="tab-btn" onclick="switchTab('dades')">Gestió de Dades</button>
+    </nav>
+
+    <!-- Contenidor de Toasts -->
+    <div id="toast-container"></div>
+
+    <!-- Contingut Principal -->
+    <main>
+        <!-- PESTANYA 1: INFORMACIÓ GENERAL -->
+        <section id="tab-info" class="tab-content active">
+            <div class="card">
+                <h2>Fitxa Tècnica del Projecte</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nom del Projecte</label>
+                        <input type="text" id="info-projecte" class="form-control" value="Disseny d'un Quadern Digital d'Equip">
+                    </div>
+                    <div class="form-group">
+                        <label>Assignatura</label>
+                        <input type="text" id="info-assignatura" class="form-control" value="Projecte d'Enginyeria Biomèdica">
+                    </div>
+                    <div class="form-group">
+                        <label>Professora</label>
+                        <input type="text" id="info-professora" class="form-control" value="Docent UOC">
+                    </div>
+                </div>
+                <button class="btn btn-primary no-print" onclick="guardarInfoGeneral()">Desar Canvis</button>
+            </div>
+
+            <div class="card">
+                <h2>Equip de Treball</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 2px solid var(--border-color);">
+                            <th style="padding: 8px;">Nom i Cognoms</th>
+                            <th style="padding: 8px;">Rol</th>
+                            <th style="padding: 8px;">Correu UOC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taula-membres">
+                        <!-- Integració inicial dels 5 membres -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PESTANYA 2: DIARI DEL PROJECTE -->
+        <section id="tab-diari" class="tab-content">
+            <div class="card no-print">
+                <h2>Nova Entrada al Diari</h2>
+                <form id="form-diari" onsubmit="crearEntradaDiari(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Autor/a</label>
+                            <select id="diari-autor" class="form-control select-autors" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipus d'Activitat</label>
+                            <select id="diari-tipus" class="form-control" required>
+                                <option value="Reunió">Reunió</option>
+                                <option value="Investigació">Investigació</option>
+                                <option value="Disseny">Disseny</option>
+                                <option value="Programació">Programació</option>
+                                <option value="Proves">Proves de laboratori</option>
+                                <option value="Redacció">Redacció</option>
+                                <option value="Altres">Altres</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Títol descriptiu</label>
+                        <input type="text" id="diari-titol" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Què s'ha fet?</label>
+                        <textarea id="diari-fet" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Decisions preses i justificació</label>
+                        <textarea id="diari-decisions" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Resultats / Conclusions</label>
+                        <textarea id="diari-resultats" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Entrada</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Registres del Diari</h2>
+                <div id="llista-diari"></div>
+            </div>
+        </section>
+
+        <!-- PESTANYA 3: KANBAN DE TASQUES -->
+        <section id="tab-tasques" class="tab-content">
+            <div class="card no-print">
+                <h2>Nova Tasca</h2>
+                <form id="form-tasca" onsubmit="crearTasca(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Títol de la Tasca</label>
+                            <input type="text" id="tasca-titol" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Responsable</label>
+                            <select id="tasca-responsable" class="form-control select-autors" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Data Límit (Deadline)</label>
+                            <input type="date" id="tasca-data" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Bloc Subtasques -->
+                    <div class="form-group">
+                        <label>Subtasques (Checklist)</label>
+                        <div style="display:flex; gap: 10px;">
+                            <input type="text" id="subtasca-input" class="form-control" placeholder="Afegeix un pas o Subtasca...">
+                            <button type="button" class="btn btn-secondary" onclick="afegirSubtascaForm()">+ Afegir</button>
+                        </div>
+                        <ul id="llista-subtasques-form" style="margin-top: 10px; list-style: none;"></ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Crear Tasca</button>
+                </form>
+            </div>
+
+            <!-- Tauler Kanban -->
+            <div class="kanban-board">
+                <div class="kanban-col">
+                    <h3>Pendent</h3>
+                    <div id="col-pendent"></div>
+                </div>
+                <div class="kanban-col">
+                    <h3>En procés</h3>
+                    <div id="col-proces"></div>
+                </div>
+                <div class="kanban-col">
+                    <h3>Bloquejada</h3>
+                    <div id="col-bloquejada"></div>
+                </div>
+                <div class="kanban-col">
+                    <h3>Completada</h3>
+                    <div id="col-completada"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTANYA 4: DASHBOARDS -->
+        <section id="tab-dashboards" class="tab-content">
+            <div class="card">
+                <h2>Indicadors de Participació</h2>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    * <em>Atenció: Aquests indicadors de participació són només orientatius. Quantitat no implica qualitat en la feina realitzada.</em>
+                </p>
+                <div id="metrics-participacio"></div>
+            </div>
+        </section>
+
+        <!-- PESTANYA 5: HISTORIAL -->
+        <section id="tab-historial" class="tab-content">
+            <div class="card">
+                <h2>Historial de Canvis (Audit Log)</h2>
+                <ul id="llista-historial" style="list-style: none;"></ul>
+            </div>
+        </section>
+
+        <!-- PESTANYA 6: GESTIÓ DE DADES -->
+        <section id="tab-dades" class="tab-content">
+            <div class="card">
+                <h2>Exportació i Importació de JSON</h2>
+                <p>Permet desar l'estat actual o fusió intel·ligent entre companys d'equip.</p>
+                <br>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="exportarJSON()">📥 Exportar JSON</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📤 Importar JSON</button>
+                    <input type="file" id="import-file" style="display:none;" accept=".json" onchange="prepararImportacio(event)">
+                    
+                    <button id="btn-undo-import" class="btn btn-warning" style="display:none;" onclick="desferImportacio()">↺ Desfer darrera importació</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL FUSIÓ JSON -->
+    <div id="modal-merge" class="modal-backdrop" style="display:none;">
+        <div class="modal">
+            <h2>Resum d'Importació JSON</h2>
+            <p id="merge-summary-text" style="margin: 1rem 0;"></p>
+            <div style="display: flex; gap: 10px; flex-direction: column;">
+                <button class="btn btn-success" onclick="confirmarFusio('merge')">🔀 Fusionar dades (Recomanat)</button>
+                <button class="btn btn-danger" onclick="confirmarFusio('replace')">⚠️ Reemplaçar-ho tot</button>
+                <button class="btn btn-secondary" onclick="tancarModalMerge()">Cancel·lar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       3. LÒGICA JAVASCRIPT (VANILLA ES6+)
+       ========================================================================== -->
+    <script>
+        // Integració Inicial dels 5 Membres de la UOC
+        const MEMBRES_INICIALS = [
+            { id: "m1", nom: "Jana Oltra Arrieta", rol: "Investigadora / Biomedicina", correu: "joltra@uoc.edu" },
+            { id: "m2", nom: "Judit Coll Portet", rol: "Coordinadora / Front-End", correu: "jcollpor@uoc.edu" },
+            { id: "m3", nom: "Paola Fernández Franco", rol: "Analista de Dades", correu: "pfernandezf@uoc.edu" },
+            { id: "m4", nom: "Victor Ceballos Zarzoso", rol: "Desenvolupador UX/UI", correu: "vceballos@uoc.edu" },
+            { id: "m5", nom: "Paula Gómez Manyes", rol: "Documentalista", correu: "pgomezm@uoc.edu" }
+        ];
+
+        let state = {
+            projecte: { nom: "Disseny d'un Quadern Digital", assignatura: "Projecte d'Enginyeria Biomèdica", professora: "Docent UOC" },
+            membres: MEMBRES_INICIALS,
+            diari: [],
+            tasques: [],
+            historial: []
+        };
+
+        let tempSubtasquesForm = [];
+        let jsonPendingImport = null;
+
+        // --- INICIALITZACIÓ ---
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarEstat();
+            inicialitzarTema();
+            comprovarBackup();
+            renderTot();
+        });
+
+        function desarEstat() {
+            localStorage.setItem('quadern_state', JSON.stringify(state));
+        }
+
+        function carregarEstat() {
+            const saved = localStorage.getItem('quadern_state');
+            if (saved) {
+                try { state = JSON.parse(saved); } catch(e) { console.error(e); }
+            } else {
+                registrarAccio("Inicialització del quadern digital");
+                desarEstat();
+            }
+        }
+
+        function registrarAccio(accio) {
+            state.historial.unshift({
+                id: Date.now().toString(),
+                data: new Date().toLocaleString('ca-ES'),
+                accio: accio
+            });
+            desarEstat();
+        }
+
+        /* --- SYSTEMA TOAST NOTIFICATIONS --- */
+        function mostrarToast(missatge, tipus = 'info', durada = 3000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${tipus}`;
+            toast.innerHTML = `<span>${missatge}</span><button class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, durada);
+        }
+
+        /* --- THEME SWITCHER (DARK / LIGHT MODE) --- */
+        function inicialitzarTema() {
+            const savedTheme = localStorage.getItem('tema_preferit') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            actualitzarIconaTema(savedTheme);
+        }
+
+        function toggleTheme() {
+            const actual = document.documentElement.getAttribute('data-theme');
+            const nou = actual === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', nou);
+            localStorage.setItem('tema_preferit', nou);
+            actualitzarIconaTema(nou);
+        }
+
+        function actualitzarIconaTema(tema) {
+            document.getElementById('theme-btn').innerText = tema === 'dark' ? '🌙' : '☀️';
+        }
+
+        /* --- NAVEGACIÓ TABS --- */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        /* --- RENDERITZACIÓ GENERAL --- */
+        function renderTot() {
+            renderMembres();
+            renderSelectsAutors();
+            renderDiari();
+            renderKanban();
+            renderDashboards();
+            renderHistorial();
+        }
+
+        function renderMembres() {
+            const tbody = document.getElementById('taula-membres');
+            tbody.innerHTML = state.membres.map(m => `
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 8px;"><strong>${m.nom}</strong></td>
+                    <td style="padding: 8px;">${m.rol}</td>
+                    <td style="padding: 8px;"><code>${m.correu}</code></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderSelectsAutors() {
+            const selects = document.querySelectorAll('.select-autors');
+            selects.forEach(s => {
+                s.innerHTML = state.membres.map(m => `<option value="${m.nom}">${m.nom}</option>`).join('');
+            });
+        }
+
+        /* --- DIARI DEL PROJECTE --- */
+        function crearEntradaDiari(e) {
+            e.preventDefault();
+            const entrada = {
+                id: Date.now().toString(),
+                data: new Date().toLocaleString('ca-ES'),
+                autor: document.getElementById('diari-autor').value,
+                tipus: document.getElementById('diari-tipus').value,
+                titol: document.getElementById('diari-titol').value,
+                fet: document.getElementById('diari-fet').value,
+                decisions: document.getElementById('diari-decisions').value,
+                resultats: document.getElementById('diari-resultats').value
+            };
+            state.diari.unshift(entrada);
+            registrarAccio(`Nova entrada diari: "${entrada.titol}" per ${entrada.autor}`);
+            desarEstat();
+            renderDiari();
+            document.getElementById('form-diari').reset();
+            mostrarToast("Entrada afegida al diari", "success");
+        }
+
+        function renderDiari() {
+            const cont = document.getElementById('llista-diari');
+            if (state.diari.length === 0) { cont.innerHTML = "<p>Cap entrada registrada.</p>"; return; }
+            cont.innerHTML = state.diari.map(d => `
+                <div class="card" style="margin-bottom: 1rem;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>${d.titol}</strong>
+                        <span class="badge badge-info">${d.tipus}</span>
+                    </div>
+                    <small style="color:var(--text-muted);">${d.data} | Per: ${d.autor}</small>
+                    <p style="margin-top:0.5rem;">${d.fet}</p>
+                    ${d.decisions ? `<p><strong>Decisions:</strong> ${d.decisions}</p>` : ''}
+                    ${d.resultats ? `<p><strong>Resultats:</strong> ${d.resultats}</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        /* --- SUBTASQUES I KANBAN (AMB DEADLINES I BADGES) --- */
+        function afegirSubtascaForm() {
+            const inp = document.getElementById('subtasca-input');
+            if (!inp.value.trim()) return;
+            tempSubtasquesForm.push({ id: Date.now().toString(), text: inp.value.trim(), completada: false });
+            inp.value = '';
+            renderSubtasquesForm();
+        }
+
+        function renderSubtasquesForm() {
+            const ul = document.getElementById('llista-subtasques-form');
+            ul.innerHTML = tempSubtasquesForm.map((s, i) => `
+                <li>${s.text} <button type="button" class="btn btn-danger" style="padding:0 4px;" onclick="tempSubtasquesForm.splice(${i},1);renderSubtasquesForm();">x</button></li>
+            `).join('');
+        }
+
+        function crearTasca(e) {
+            e.preventDefault();
+            const tasca = {
+                id: Date.now().toString(),
+                titol: document.getElementById('tasca-titol').value,
+                responsable: document.getElementById('tasca-responsable').value,
+                dataLimit: document.getElementById('tasca-data').value,
+                estat: 'Pendent',
+                subtasques: [...tempSubtasquesForm]
+            };
+            state.tasques.push(tasca);
+            tempSubtasquesForm = [];
+            document.getElementById('llista-subtasques-form').innerHTML = '';
+            registrarAccio(`Creació de tasca: "${tasca.titol}"`);
+            desarEstat();
+            renderKanban();
+            document.getElementById('form-tasca').reset();
+            mostrarToast("Tasca creada correctament", "success");
+        }
+
+        function obtenirEstatTermini(dataLimitStr, estat) {
+            if (estat === 'Completada') return { text: '✅ Finalitzada', classe: 'badge-success', cardClass: '' };
+            const avui = new Date(); avui.setHours(0,0,0,0);
+            const limit = new Date(dataLimitStr); limit.setHours(0,0,0,0);
+            const diff = Math.ceil((limit - avui) / (1000 * 60 * 60 * 24));
+
+            if (diff < 0) return { text: `⚠️ Vençuda fa ${Math.abs(diff)} d.`, classe: 'badge-danger', cardClass: 'deadline-overdue' };
+            if (diff <= 2) return { text: diff === 0 ? "⏳ Venç avui" : `⏳ Queda ${diff} d.`, classe: 'badge-warning', cardClass: 'deadline-urgent' };
+            return { text: `📅 Queden ${diff} d.`, classe: 'badge-info', cardClass: '' };
+        }
+
+        function renderKanban() {
+            const cols = { 'Pendent': [], 'En procés': [], 'Bloquejada': [], 'Completada': [] };
+            state.tasques.forEach(t => { if (cols[t.estat]) cols[t.estat].push(t); });
+
+            ['Pendent', 'En procés', 'Bloquejada', 'Completada'].forEach(e => {
+                const key = e === 'Pendent' ? 'pendent' : e === 'En procés' ? 'proces' : e === 'Bloquejada' ? 'bloquejada' : 'completada';
+                const cont = document.getElementById(`col-${key}`);
+                cont.innerHTML = cols[e].map(t => {
+                    const statusDeadline = obtenirEstatTermini(t.dataLimit, t.estat);
+                    const subComp = t.subtasques ? t.subtasques.filter(s => s.completada).length : 0;
+                    const subTot = t.subtasques ? t.subtasques.length : 0;
+                    return `
+                        <div class="task-card ${statusDeadline.cardClass}">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <strong>${t.titol}</strong>
+                            </div>
+                            <small>Resp: ${t.responsable}</small><br>
+                            <span class="badge ${statusDeadline.classe}">${statusDeadline.text}</span>
+                            
+                            ${subTot > 0 ? `
+                                <div class="subtasks-list">
+                                    <small>Subtasques (${subComp}/${subTot})</small>
+                                    ${t.subtasques.map(s => `
+                                        <div class="subtask-item ${s.completada ? 'completed' : ''}">
+                                            <input type="checkbox" ${s.completada ? 'checked' : ''} onchange="toggleSubtasca('${t.id}', '${s.id}')">
+                                            <span>${s.text}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+
+                            <div style="margin-top:10px;" class="no-print">
+                                <select class="form-control" style="font-size:0.8rem; padding:2px;" onchange="canviarEstatTasca('${t.id}', this.value)">
+                                    <option value="Pendent" ${t.estat==='Pendent'?'selected':''}>Pendent</option>
+                                    <option value="En procés" ${t.estat==='En procés'?'selected':''}>En procés</option>
+                                    <option value="Bloquejada" ${t.estat==='Bloquejada'?'selected':''}>Bloquejada</option>
+                                    <option value="Completada" ${t.estat==='Completada'?'selected':''}>Completada</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        function toggleSubtasca(tascaId, subId) {
+            const tasca = state.tasques.find(t => t.id === tascaId);
+            if (tasca) {
+                const sub = tasca.subtasques.find(s => s.id === subId);
+                if (sub) { sub.completada = !sub.completada; desarEstat(); renderKanban(); }
+            }
+        }
+
+        function canviarEstatTasca(tascaId, nouEstat) {
+            const tasca = state.tasques.find(t => t.id === tascaId);
+            if (tasca) {
+                tasca.estat = nouEstat;
+                registrarAccio(`Canvi estat tasca "${tasca.titol}" a ${nouEstat}`);
+                desarEstat();
+                renderKanban();
+                renderDashboards();
+                mostrarToast("Estat de la tasca actualitzat", "info");
+            }
+        }
+
+        /* --- DASHBOARDS & HISTORIAL --- */
+        function renderDashboards() {
+            const cont = document.getElementById('metrics-participacio');
+            cont.innerHTML = state.membres.map(m => {
+                const nDiari = state.diari.filter(d => d.autor === m.nom).length;
+                const nTasques = state.tasques.filter(t => t.responsable === m.nom).length;
+                return `<p><strong>${m.nom}:</strong> ${nDiari} entrades al diari | ${nTasques} tasques assignades</p>`;
+            }).join('');
+        }
+
+        function renderHistorial() {
+            document.getElementById('llista-historial').innerHTML = state.historial.map(h => `
+                <li style="border-bottom: 1px solid var(--border-color); padding: 4px 0;">
+                    <small style="color:var(--text-muted);">${h.data}</small> - ${h.accio}
+                </li>
+            `).join('');
+        }
+
+        /* --- IMPORTACIÓ / EXPORTACIÓ JSON I FUSIÓ INTEL·LIGENT --- */
+        function exportarJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+            const a = document.createElement('a');
+            a.href = dataStr;
+            a.download = `quadern_digital_${Date.now()}.json`;
+            a.click();
+            mostrarToast("JSON exportat amb èxit", "success");
+        }
+
+        function prepararImportacio(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    jsonPendingImport = JSON.parse(evt.target.result);
+                    calcularResumFusio(jsonPendingImport);
+                } catch(err) {
+                    mostrarToast("Fitxer JSON no vàlid", "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function calcularResumFusio(imported) {
+            const novesEntrades = (imported.diari || []).filter(id => !state.diari.some(sd => sd.id === id.id)).length;
+            const novesTasques = (imported.tasques || []).filter(it => !state.tasques.some(st => st.id === it.id)).length;
+            
+            document.getElementById('merge-summary-text').innerHTML = `
+                El fitxer d'importació conté:<br>
+                - <strong>${novesEntrades}</strong> noves entrades de diari.<br>
+                - <strong>${novesTasques}</strong> noves tasques.<br>
+            `;
+            document.getElementById('modal-merge').style.display = 'flex';
+        }
+
+        function tancarModalMerge() {
+            document.getElementById('modal-merge').style.display = 'none';
+            jsonPendingImport = null;
+        }
+
+        function confirmarFusio(mode) {
+            if (!jsonPendingImport) return;
+
+            // 1. Còpia de Seguretat Automàtica (Auto-Backup)
+            localStorage.setItem('quadern_backup_pre_import', JSON.stringify(state));
+            comprovarBackup();
+
+            if (mode === 'replace') {
+                state = jsonPendingImport;
+                registrarAccio("Sobreescriptura completa des de fitxer JSON");
+            } else {
+                // Fusió Intel·ligent per ID
+                (jsonPendingImport.diari || []).forEach(item => {
+                    if (!state.diari.some(d => d.id === item.id)) state.diari.push(item);
+                });
+                (jsonPendingImport.tasques || []).forEach(item => {
+                    const idx = state.tasques.findIndex(t => t.id === item.id);
+                    if (idx === -1) state.tasques.push(item);
+                    else state.tasques[idx] = item; // Reemplaça amb versió més recent
+                });
+                registrarAccio("Fusió intel·ligent de dades JSON");
+            }
+
+            desarEstat();
+            renderTot();
+            tancarModalMerge();
+            mostrarToast("Dades integrades correctament", "success");
+        }
+
+        function comprovarBackup() {
+            const hasBackup = !!localStorage.getItem('quadern_backup_pre_import');
+            document.getElementById('btn-undo-import').style.display = hasBackup ? 'inline-block' : 'none';
+        }
+
+        function desferImportacio() {
+            const backup = localStorage.getItem('quadern_backup_pre_import');
+            if (backup) {
+                state = JSON.parse(backup);
+                localStorage.removeItem('quadern_backup_pre_import');
+                desarEstat();
+                renderTot();
+                comprovarBackup();
+                mostrarToast("Importació desfeta correctament", "warning");
+            }
+        }
+
+        function guardarInfoGeneral() {
+            state.projecte.nom = document.getElementById('info-projecte').value;
+            state.projecte.assignatura = document.getElementById('info-assignatura').value;
+            state.projecte.professora = document.getElementById('info-professora').value;
+            registrarAccio("Modificació dades generals del projecte");
+            desarEstat();
+            mostrarToast("Informació general desada", "success");
+        }
+    </script>
+</body>
+</html>
