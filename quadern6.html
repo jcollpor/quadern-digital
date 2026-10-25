@@ -288,6 +288,7 @@
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
+      display: inline-block;
     }
 
     .badge-activity {
@@ -543,6 +544,11 @@
       color: #a0aec0;
     }
 
+    /* ESTILS DE SEVERITAT I RISCOS */
+    .badge-sev-baixa { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .badge-sev-mitjana { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .badge-sev-alta { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
     /* ESTILS DE NOTIFICACIONS FLOTANTS (TOASTS) */
     #toast-container {
       position: fixed;
@@ -665,6 +671,7 @@
       <button class="nav-btn active" onclick="showTab('info')">📋 Informació General</button>
       <button class="nav-btn" onclick="showTab('diari')">📖 Diari del Projecte</button>
       <button class="nav-btn" onclick="showTab('tasques')">☑️ Gestió de Tasques</button>
+      <button class="nav-btn" onclick="showTab('riscos')">⚠️ Control de Riscos</button>
       <button class="nav-btn" onclick="showTab('calendari')">📅 Calendari de treball</button>
       <button class="nav-btn" onclick="showTab('dashboard')">📊 Seguiment i Indicadors</button>
       <button class="nav-btn" onclick="showTab('historial')">📜 Historial de Canvis</button>
@@ -903,7 +910,108 @@
       </div>
     </div>
 
-    <!-- 4. CALENDARI DE TREBALL -->
+    <!-- 4. CONTROL DE RISCOS I INCIDÈNCIES -->
+    <div id="tab-riscos" class="tab-content">
+      <div class="card">
+        <h2>Formular Risc / Incidència</h2>
+        <form id="form-risc" onsubmit="guardarRisc(event)">
+          <input type="hidden" id="risc-id">
+          
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Títol del Risc o Problema *</label>
+              <input type="text" id="risc-titol" placeholder="Ex: Retard en l'arribada dels components del biosensor" required>
+            </div>
+            <div class="form-group">
+              <label>Tipus *</label>
+              <select id="risc-tipus" required>
+                <option value="Tècnic">Tècnic</option>
+                <option value="Material/Logística">Material/Logística</option>
+                <option value="Organitzatiu">Organitzatiu</option>
+                <option value="Seguretat">Seguretat</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label>Responsable de la supervisió *</label>
+              <select id="risc-responsable" required>
+                <!-- Carrega dinàmicament els membres -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Probabilitat *</label>
+              <select id="risc-probabilitat" required onchange="actualitzarSeveritatVistaForm()">
+                <option value="Baixa">Baixa</option>
+                <option value="Mitjana">Mitjana</option>
+                <option value="Alta">Alta</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Impacte Esperat *</label>
+              <select id="risc-impacte" required onchange="actualitzarSeveritatVistaForm()">
+                <option value="Baix">Baix</option>
+                <option value="Mitjà">Mitjà</option>
+                <option value="Alt">Alt</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Estat del Risc *</label>
+              <select id="risc-estat" required>
+                <option value="Identificat">Identificat</option>
+                <option value="En mitigació">En mitigació</option>
+                <option value="Ocorregut/Incidència">Ocorregut/Incidència</option>
+                <option value="Resolt">Resolt</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Calcul de Severitat Calculat</label>
+              <div style="padding: 9px 0;">
+                <span id="preview-severitat-badge" class="badge badge-sev-baixa">Baixa</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Pla de Mitigació o Solució *</label>
+            <textarea id="risc-mitigacio" rows="3" placeholder="Detalla les accions a prendre per reduir la probabilitat/impacte o per resoldre la incidència..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Desar Risc/Incidència</button>
+          <button type="button" class="btn btn-secondary" onclick="netejarFormRisc()">Cancel·lar / Netejar</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Registre i Taula de Riscos</h2>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Títol del Risc</th>
+                <th>Tipus</th>
+                <th>Responsable</th>
+                <th>Probabilitat</th>
+                <th>Impacte</th>
+                <th>Severitat</th>
+                <th>Estat</th>
+                <th>Pla de Mitigació</th>
+                <th>Accions</th>
+              </tr>
+            </thead>
+            <tbody id="taula-riscos">
+              <!-- Carrega dinàmicament -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. CALENDARI DE TREBALL -->
     <div id="tab-calendari" class="tab-content">
       <div class="card">
         <h2>Calendari de Treball</h2>
@@ -937,7 +1045,7 @@
       </div>
     </div>
 
-    <!-- 5. SEGUIMENT I INDICADORS -->
+    <!-- 6. SEGUIMENT I INDICADORS -->
     <div id="tab-dashboard" class="tab-content">
       <div class="card">
         <h2>Progrés Global del Projecte</h2>
@@ -986,7 +1094,7 @@
       </div>
     </div>
 
-    <!-- 6. HISTORIAL DE CANVIS -->
+    <!-- 7. HISTORIAL DE CANVIS -->
     <div id="tab-historial" class="tab-content">
       <div class="card">
         <h2>Historial de Canvis (Audit Log)</h2>
@@ -1005,7 +1113,7 @@
       </div>
     </div>
 
-    <!-- 7. GESTIÓ DE DADES -->
+    <!-- 8. GESTIÓ DE DADES -->
     <div id="tab-dades" class="tab-content">
       <div class="card">
         <h2>Exportació i Importació de Dades (JSON)</h2>
@@ -1032,270 +1140,277 @@
       <div class="card" style="border-color: var(--danger);">
         <h2 style="color: var(--danger);">Zona de Perill</h2>
         <p style="font-size: 0.9rem; margin-bottom: 15px;">Aquesta acció esborrarà totes les dades emmagatzemades localment en aquest navegador.</p>
-        <button class="btn btn-danger" onclick="reiniciarDades()">⚠️ Restablir totes les dades</button>
+        <button class="btn btn-danger" onclick="reiniciarTot()">⚠️ Reiniciar Quadern Digital</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal Detalls de Tasca del Calendari -->
-  <div id="modal-tasca-detalls" class="modal-overlay">
-    <div class="modal-card">
-      <h2 style="color: var(--primary); margin-bottom: 12px;" id="modal-task-title">Detalls de la Tasca</h2>
-      <div style="margin-bottom: 10px;">
-        <strong>Data límit:</strong> <span id="modal-task-date"></span>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <strong>Estat:</strong> <span id="modal-task-status" class="badge"></span>
-      </div>
-      <div style="margin-bottom: 15px;">
-        <strong>Responsable/s:</strong> <span id="modal-task-resp"></span>
-      </div>
-      <div style="text-align: right;">
-        <button class="btn btn-secondary" onclick="tancarModalDetalls()">Tancar</button>
+  <!-- MODAL DETALLS CALENDARI -->
+  <div id="modal-tasca" class="modal-overlay" onclick="tancarModalTasca(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <h3 id="modal-tasca-titol" style="color: var(--primary); margin-bottom: 10px;">Detalls de la Tasca</h3>
+      <div id="modal-tasca-contingut" style="font-size: 0.95rem; line-height: 1.6;"></div>
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="btn btn-secondary btn-sm" onclick="tancarModalTasca()">Tancar</button>
       </div>
     </div>
   </div>
 
-  <!-- Contenidor de Notificacions Flotants (Toasts) -->
+  <!-- TOAST CONTAINER -->
   <div id="toast-container"></div>
 
   <script>
-    // Membres de l'equip predeterminats per defecte
-    const MEMBRES_DEFECTE = [
-      { id: "m1", nom: "Jana Oltra Arrieta", rol: "", email: "" },
-      { id: "m2", nom: "Judit Coll Portet", rol: "", email: "" },
-      { id: "m3", nom: "Paola Fernández Franco", rol: "", email: "" },
-      { id: "m4", nom: "Victor Ceballos Zarzoso", rol: "", email: "" },
-      { id: "m5", nom: "Paula Gómez Manyes", rol: "", email: "" }
-    ];
+    /* ==========================================================================
+       ESTAT GLOBAL DE L'APLICACIÓ (STATE)
+       ========================================================================== */
+    const STORAGE_KEY = 'quadern_biomedica_uoc_v2';
 
-    // Estat Global de l'Aplicació
     let appState = {
-      meta: {
-        versio: "1.0",
-        darreraModificacio: new Date().toISOString()
+      infoGeneral: {
+        nom: "Biosensor EEG Portàtil",
+        assignatura: "Projecte d'Enginyeria Biomèdica",
+        professora: "Dra. Maria Garcia"
       },
-      projecte: {
-        nom: "",
-        assignatura: "",
-        professora: ""
-      },
-      equip: JSON.parse(JSON.stringify(MEMBRES_DEFECTE)),
+      equip: [
+        { id: '1', nom: 'Marc Soler', rol: 'Líder / Hardware', email: 'msoler@uoc.edu' },
+        { id: '2', nom: 'Anna Pujol', rol: 'Processament de Senyal', email: 'apujol@uoc.edu' },
+        { id: '3', nom: 'Jordi Vila', rol: 'Software / Firmware', email: 'jvila@uoc.edu' }
+      ],
       diari: [],
       tasques: [],
+      riscos: [],
       historial: []
     };
 
-    // Estat del Calendari
-    let currentDateCalendar = new Date();
+    let calendarCurrentDate = new Date();
+    let tempSubtasquesForm = [];
 
-    // Estat temporal per les subtasques del formulari
-    let subtasksFormTemp = [];
-
-    // FUNCIONS AUXILIARS I UTILS
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    // SISTEMA DE NOTIFICACIONS TEMPORALS FLOTANTS (TOASTS)
-    function mostrarToast(missatge, tipus = 'info', durada = 3500) {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
-
-      const toast = document.createElement('div');
-      toast.className = `toast toast-${tipus}`;
-      toast.innerHTML = `
-        <span>${escapeHtml(missatge)}</span>
-        <button class="toast-close" onclick="tancarToast(this.parentElement)">&times;</button>
-      `;
-
-      container.appendChild(toast);
-
-      const timer = setTimeout(() => {
-        tancarToast(toast);
-      }, durada);
-
-      toast.dataset.timer = timer;
-    }
-
-    function tancarToast(toast) {
-      if (!toast) return;
-      if (toast.dataset.timer) clearTimeout(toast.dataset.timer);
-      toast.style.animation = 'toastFadeOut 0.3s ease-in forwards';
-      setTimeout(() => {
-        if (toast.parentElement) toast.parentElement.removeChild(toast);
-      }, 300);
-    }
-
-    // Inicialització
-    document.addEventListener("DOMContentLoaded", () => {
-      carregarLocalStorage();
-      establirDataHoraActual();
-      renderitzarTot();
+    /* ==========================================================================
+       INICIALITZACIÓ I PERSISTÈNCIA (LOCALSTORAGE)
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      carregarEstatLocalStorage();
+      inicialitzarDataDiari();
+      actualitzarTotesVistes();
     });
 
-    function establirDataHoraActual() {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      document.getElementById('diari-data').value = now.toISOString().slice(0, 16);
-    }
-
-    function registrarAccio(accio, usuari = "Sistema") {
-      appState.historial.unshift({
-        id: "hist-" + Date.now() + "-" + Math.random().toString(36).substr(2, 4),
-        timestamp: new Date().toISOString(),
-        usuari: usuari,
-        accio: accio
-      });
-    }
-
-    function desarEstat(accioRealitzada, usuariAccio) {
-      appState.meta.darreraModificacio = new Date().toISOString();
-      if (accioRealitzada) {
-        registrarAccio(accioRealitzada, usuariAccio || "Usuari");
+    function desarEstatLocalStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.error("Error desant a LocalStorage:", e);
       }
-      localStorage.setItem("quadern_uoc_state", JSON.stringify(appState));
-      renderitzarTot();
     }
 
-    function carregarLocalStorage() {
-      const saved = localStorage.getItem("quadern_uoc_state");
-      if (saved) {
+    function carregarEstatLocalStorage() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (data) {
         try {
-          const parsed = JSON.parse(saved);
-          appState = parsed;
-
-          if (!appState.equip || appState.equip.length === 0) {
-            appState.equip = JSON.parse(JSON.stringify(MEMBRES_DEFECTE));
-          }
+          const parsed = JSON.parse(data);
+          appState = { ...appState, ...parsed };
+          if (!appState.riscos) appState.riscos = [];
+          if (!appState.historial) appState.historial = [];
         } catch (e) {
-          console.error("Error carregant localStorage", e);
+          console.error("Error carregant LocalStorage:", e);
         }
       } else {
-        registrarAccio("Inicialització de l'aplicació", "Sistema");
-        localStorage.setItem("quadern_uoc_state", JSON.stringify(appState));
+        registrarHistorial("Sistemes", "Inicialització del quadern digital amb dades per defecte.");
       }
     }
 
-    // NAVEGACIÓ
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById('tab-' + tabId).classList.add('active');
-      event.target.classList.add('active');
-
-      if (tabId === 'calendari') {
-        renderitzarCalendari();
-      }
+    function registrarHistorial(usuari, accio) {
+      const novalog = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 4),
+        timestamp: new Date().toISOString(),
+        usuari: usuari || "Usuari",
+        accio: accio
+      };
+      appState.historial.unshift(novalog);
+      if (appState.historial.length > 100) appState.historial.pop();
     }
 
-    // RENDERITZACIÓ GENERAL
-    function renderitzarTot() {
-      renderitzarInfoGeneral();
-      actualitzarDesplegablesEquip();
+    function actualitzarTotesVistes() {
+      carregarInfoGeneralForm();
+      renderitzarTaulaEquip();
+      carregarOpcionsAutors();
       renderitzarDiari();
-      renderitzarTasques();
+      renderitzarKanban();
+      renderitzarRiscos();
       renderitzarCalendari();
       renderitzarDashboard();
       renderitzarHistorial();
     }
 
-    // 1. INFORMACIÓ GENERAL
-    function renderitzarInfoGeneral() {
-      document.getElementById('proj-nom').value = appState.projecte.nom || "";
-      document.getElementById('proj-assignatura').value = appState.projecte.assignatura || "";
-      document.getElementById('proj-professora').value = appState.projecte.professora || "";
+    /* ==========================================================================
+       SISTEMA DE NAVEGACIÓ AMB PESTANYES (TABS)
+       ========================================================================== */
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('nav .nav-btn').forEach(el => el.classList.remove('active'));
 
-      const tbody = document.getElementById('taula-equip');
-      tbody.innerHTML = "";
-      appState.equip.forEach((m, index) => {
-        tbody.innerHTML += `
-          <tr>
-            <td><strong>${escapeHtml(m.nom)}</strong></td>
-            <td><input type="text" value="${escapeHtml(m.rol || '')}" onchange="actualitzarMembre(${index}, 'rol', this.value)" placeholder="Afegir rol..."></td>
-            <td><input type="email" value="${escapeHtml(m.email || '')}" onchange="actualitzarMembre(${index}, 'email', this.value)" placeholder="correu@uoc.edu"></td>
-            <td>
-              <button class="btn btn-danger btn-sm" onclick="eliminarMembre(${index})">Esborrar</button>
-            </td>
-          </tr>
-        `;
-      });
+      const selectedTab = document.getElementById(`tab-${tabId}`);
+      if (selectedTab) selectedTab.classList.add('active');
+
+      const btn = Array.from(document.querySelectorAll('nav .nav-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+      if (btn) btn.classList.add('active');
+
+      if (tabId === 'calendari') renderitzarCalendari();
+      if (tabId === 'dashboard') renderitzarDashboard();
+      if (tabId === 'historial') renderitzarHistorial();
+      if (tabId === 'riscos') renderitzarRiscos();
+    }
+
+    /* ==========================================================================
+       SISTEMA DE TOASTS (NOTIFICACIONS FLOTANTS)
+       ========================================================================== */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        if (toast.parentElement) {
+          toast.style.animation = 'toastFadeOut 0.3s ease-out forwards';
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 4000);
+    }
+
+    /* ==========================================================================
+       1. SECCIÓ INFORMACIÓ GENERAL I EQUIP
+       ========================================================================== */
+    function carregarInfoGeneralForm() {
+      document.getElementById('proj-nom').value = appState.infoGeneral.nom || '';
+      document.getElementById('proj-assignatura').value = appState.infoGeneral.assignatura || '';
+      document.getElementById('proj-professora').value = appState.infoGeneral.professora || '';
     }
 
     function guardarInfoGeneral() {
-      appState.projecte.nom = document.getElementById('proj-nom').value;
-      appState.projecte.assignatura = document.getElementById('proj-assignatura').value;
-      appState.projecte.professora = document.getElementById('proj-professora').value;
-      desarEstat("S'ha actualitzat la informació general del projecte");
-      mostrarToast("Dades generals desades correctament", "success");
+      appState.infoGeneral.nom = document.getElementById('proj-nom').value;
+      appState.infoGeneral.assignatura = document.getElementById('proj-assignatura').value;
+      appState.infoGeneral.professora = document.getElementById('proj-professora').value;
+
+      registrarHistorial("Sistemes", "S'han actualitzat les dades generals del projecte.");
+      desarEstatLocalStorage();
+      showToast("Dades generals actualitzades correctament", "success");
     }
 
-    function actualitzarMembre(index, camp, valor) {
-      if (appState.equip[index]) {
-        appState.equip[index][camp] = valor;
-        desarEstat(`S'ha actualitzat el ${camp} de ${appState.equip[index].nom}`);
+    function renderitzarTaulaEquip() {
+      const tbody = document.getElementById('taula-equip');
+      tbody.innerHTML = '';
+
+      appState.equip.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${m.nom}</strong></td>
+          <td><input type="text" class="form-control" value="${m.rol || ''}" onchange="actualitzarMembreEquip('${m.id}', 'rol', this.value)"></td>
+          <td><input type="email" class="form-control" value="${m.email || ''}" onchange="actualitzarMembreEquip('${m.id}', 'email', this.value)"></td>
+          <td><button class="btn btn-danger btn-sm" onclick="eliminarMembreEquip('${m.id}')">Eliminar</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function actualitzarMembreEquip(id, camp, valor) {
+      const membre = appState.equip.find(m => m.id === id);
+      if (membre) {
+        membre[camp] = valor;
+        registrarHistorial(membre.nom, `S'ha actualitzat el camp '${camp}' del membre.`);
+        desarEstatLocalStorage();
+        carregarOpcionsAutors();
       }
     }
 
     function afegirNouMembrePrompt() {
       const nom = prompt("Nom i cognoms del nou membre:");
-      if (nom && nom.trim() !== "") {
-        const id = "m-" + Date.now();
-        appState.equip.push({ id, nom: nom.trim(), rol: "", email: "" });
-        desarEstat(`S'ha afegit el membre ${nom}`);
-        mostrarToast(`Membre ${nom} afegit`, "success");
+      if (!nom || !nom.trim()) return;
+      const rol = prompt("Rol al projecte:") || "Integrant";
+      const email = prompt("Correu UOC:") || "";
+
+      const nouMembre = {
+        id: Date.now().toString(),
+        nom: nom.trim(),
+        rol: rol.trim(),
+        email: email.trim()
+      };
+
+      appState.equip.push(nouMembre);
+      registrarHistorial("Sistemes", `S'ha afegit un nou membre a l'equip: ${nouMembre.nom}`);
+      desarEstatLocalStorage();
+      actualitzarTotesVistes();
+      showToast(`Membre ${nouMembre.nom} afegit`, "success");
+    }
+
+    function eliminarMembreEquip(id) {
+      const idx = appState.equip.findIndex(m => m.id === id);
+      if (idx !== -1) {
+        const nom = appState.equip[idx].nom;
+        if (confirm(`Estàs segur de voler eliminar a ${nom} de l'equip?`)) {
+          appState.equip.splice(idx, 1);
+          registrarHistorial("Sistemes", `S'ha eliminat el membre ${nom} de l'equip.`);
+          desarEstatLocalStorage();
+          actualitzarTotesVistes();
+          showToast(`Membre eliminat`, "info");
+        }
       }
     }
 
-    function eliminarMembre(index) {
-      const m = appState.equip[index];
-      if (m && confirm(`Segur que vols eliminar a ${m.nom}?`)) {
-        appState.equip.splice(index, 1);
-        desarEstat(`S'ha eliminat el membre ${m.nom}`);
-        mostrarToast("Membre eliminat", "info");
-      }
-    }
-
-    function actualitzarDesplegablesEquip() {
+    function carregarOpcionsAutors() {
       const selectDiari = document.getElementById('diari-autor');
       const selectFiltre = document.getElementById('filtre-autor');
-      const containerResp = document.getElementById('container-tasca-responsables');
+      const containerTasques = document.getElementById('container-tasca-responsables');
+      const selectRiscos = document.getElementById('risc-responsable');
 
-      selectDiari.innerHTML = "";
+      const prevDiari = selectDiari.value;
+      const prevFiltre = selectFiltre.value;
+      const prevRiscos = selectRiscos ? selectRiscos.value : '';
+
+      selectDiari.innerHTML = '<option value="">-- Selecciona Autor/a --</option>';
       selectFiltre.innerHTML = '<option value="">Tots els autors</option>';
-      containerResp.innerHTML = "";
+      if (selectRiscos) selectRiscos.innerHTML = '<option value="">-- Selecciona Responsable --</option>';
+
+      containerTasques.innerHTML = '';
 
       appState.equip.forEach(m => {
-        selectDiari.innerHTML += `<option value="${m.id}">${escapeHtml(m.nom)}</option>`;
-        selectFiltre.innerHTML += `<option value="${m.id}">${escapeHtml(m.nom)}</option>`;
-        
-        containerResp.innerHTML += `
+        selectDiari.innerHTML += `<option value="${m.nom}">${m.nom}</option>`;
+        selectFiltre.innerHTML += `<option value="${m.nom}">${m.nom}</option>`;
+        if (selectRiscos) selectRiscos.innerHTML += `<option value="${m.nom}">${m.nom}</option>`;
+
+        containerTasques.innerHTML += `
           <label style="font-weight: normal; cursor: pointer;">
-            <input type="checkbox" class="chk-resp" value="${m.id}"> ${escapeHtml(m.nom)}
+            <input type="checkbox" name="tasca-resp" value="${m.nom}"> ${m.nom}
           </label>
         `;
       });
+
+      if (prevDiari) selectDiari.value = prevDiari;
+      if (prevFiltre) selectFiltre.value = prevFiltre;
+      if (selectRiscos && prevRiscos) selectRiscos.value = prevRiscos;
     }
 
-    // 2. DIARI DEL PROJECTE
-    function afegirCampEnllac(url = "", text = "") {
+    /* ==========================================================================
+       2. SECCIÓ DIARI DEL PROJECTE
+       ========================================================================== */
+    function inicialitzarDataDiari() {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      document.getElementById('diari-data').value = now.toISOString().slice(0, 16);
+    }
+
+    function afegirCampEnllac(url = '', desc = '') {
       const container = document.getElementById('container-enllacos');
       const div = document.createElement('div');
-      div.className = "grid-2";
-      div.style.marginBottom = "5px";
+      div.style.display = 'flex';
+      div.style.gap = '8px';
+      div.style.marginBottom = '6px';
       div.innerHTML = `
-        <input type="text" class="link-text" placeholder="Text de l'enllaç" value="${escapeHtml(text)}">
-        <div style="display: flex; gap: 5px;">
-          <input type="text" class="link-url" placeholder="https://..." value="${escapeHtml(url)}">
-          <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">✕</button>
-        </div>
+        <input type="text" placeholder="Descripció de l'enllaç" value="${desc}" class="enllac-desc" style="flex:1;">
+        <input type="text" placeholder="URL (https://...)" value="${url}" class="enllac-url" style="flex:2;">
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✖</button>
       `;
       container.appendChild(div);
     }
@@ -1303,476 +1418,689 @@
     function guardarEntradaDiari(e) {
       e.preventDefault();
       const id = document.getElementById('diari-id').value;
-      const dataHora = document.getElementById('diari-data').value;
-      const autorId = document.getElementById('diari-autor').value;
-      const tipus = document.getElementById('diari-tipus').value;
-      const titol = document.getElementById('diari-titol').value.trim();
-      const descripcio = document.getElementById('diari-descripcio').value.trim();
-      const decisions = document.getElementById('diari-decisions').value.trim();
-      const resultats = document.getElementById('diari-resultats').value.trim();
+      const dataVal = document.getElementById('diari-data').value;
+      const autorVal = document.getElementById('diari-autor').value;
+      const tipusVal = document.getElementById('diari-tipus').value;
+      const titolVal = document.getElementById('diari-titol').value;
+      const descVal = document.getElementById('diari-descripcio').value;
+      const decVal = document.getElementById('diari-decisions').value;
+      const resVal = document.getElementById('diari-resultats').value;
 
       const enllacos = [];
-      document.querySelectorAll('#container-enllacos .grid-2').forEach(row => {
-        const text = row.querySelector('.link-text').value.trim();
-        const url = row.querySelector('.link-url').value.trim();
-        if (url) enllacos.push({ text: text || url, url });
+      document.querySelectorAll('#container-enllacos > div').forEach(div => {
+        const u = div.querySelector('.enllac-url').value.trim();
+        const d = div.querySelector('.enllac-desc').value.trim();
+        if (u) enllacos.push({ url: u, desc: d || u });
       });
 
-      const autorObj = appState.equip.find(m => m.id === autorId);
-      const autorNom = autorObj ? autorObj.nom : "Desconegut";
-
       if (id) {
-        const entry = appState.diari.find(x => x.id === id);
-        if (entry) {
-          Object.assign(entry, { dataHora, autorId, tipusActivitat: tipus, titol, descripcio, decisions, resultats, enllacos });
-          desarEstat(`Modificada entrada del diari: "${titol}"`, autorNom);
-          mostrarToast("Entrada actualitzada", "success");
+        const idx = appState.diari.findIndex(x => x.id === id);
+        if (idx !== -1) {
+          appState.diari[idx] = { ...appState.diari[idx], data: dataVal, autor: autorVal, tipus: tipusVal, titol: titolVal, descripcio: descVal, decisions: decVal, resultats: resVal, enllacos };
+          registrarHistorial(autorVal, `S'ha editat l'entrada del diari: "${titolVal}"`);
+          showToast("Entrada actualitzada", "success");
         }
       } else {
-        const newEntry = {
-          id: "d-" + Date.now(),
-          dataHora, autorId, tipusActivitat: tipus, titol, descripcio, decisions, resultats, enllacos
+        const novaEntrada = {
+          id: Date.now().toString(),
+          data: dataVal,
+          autor: autorVal,
+          tipus: tipusVal,
+          titol: titolVal,
+          descripcio: descVal,
+          decisions: decVal,
+          resultats: resVal,
+          enllacos
         };
-        appState.diari.unshift(newEntry);
-        desarEstat(`Nova entrada al diari: "${titol}"`, autorNom);
-        mostrarToast("Nova entrada afegida al diari", "success");
+        appState.diari.unshift(novaEntrada);
+        registrarHistorial(autorVal, `Nova entrada al diari: "${titolVal}"`);
+        showToast("Entrada afegida al diari", "success");
       }
 
+      desarEstatLocalStorage();
       netejarFormDiari();
+      renderitzarDiari();
+      renderitzarDashboard();
     }
 
     function netejarFormDiari() {
+      document.getElementById('diari-id').value = '';
       document.getElementById('form-diari').reset();
-      document.getElementById('diari-id').value = "";
-      document.getElementById('container-enllacos').innerHTML = "";
-      establirDataHoraActual();
+      document.getElementById('container-enllacos').innerHTML = '';
+      inicialitzarDataDiari();
     }
 
     function renderitzarDiari() {
-      filtrarDiari();
-    }
-
-    function filtrarDiari() {
-      const text = document.getElementById('filtre-text').value.toLowerCase();
-      const autor = document.getElementById('filtre-autor').value;
-      const tipus = document.getElementById('filtre-tipus').value;
-      const desde = document.getElementById('filtre-data-desde').value;
-      const finsa = document.getElementById('filtre-data-finsa').value;
-
       const container = document.getElementById('llista-diari');
-      container.innerHTML = "";
+      container.innerHTML = '';
 
-      const filtrades = appState.diari.filter(e => {
-        if (text && !e.titol.toLowerCase().includes(text) && !e.descripcio.toLowerCase().includes(text)) return false;
-        if (autor && e.autorId !== autor) return false;
-        if (tipus && e.tipusActivitat !== tipus) return false;
-        if (desde && new Date(e.dataHora) < new Date(desde)) return false;
-        if (finsa && new Date(e.dataHora) > new Date(finsa + 'T23:59:59')) return false;
-        return true;
-      });
+      const filtrats = filtrarEntradesDiariArray();
 
-      if (filtrades.length === 0) {
-        container.innerHTML = "<p style='color:#718096;'>No s'han trobat entrades amb aquests filtres.</p>";
+      if (filtrats.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#718096; padding:20px;">No hi ha cap entrada que coincideixi amb els filtres.</p>';
         return;
       }
 
-      filtrades.forEach(e => {
-        const autorObj = appState.equip.find(m => m.id === e.autorId);
-        const autorNom = autorObj ? autorObj.nom : "Desconegut";
+      filtrats.forEach(e => {
+        const dFormatted = new Date(e.data).toLocaleString('ca-ES', { dateStyle: 'medium', timeStyle: 'short' });
+        const card = document.createElement('div');
+        card.className = 'entry-card';
 
-        let enllacosHtml = "";
+        let enllacosHTML = '';
         if (e.enllacos && e.enllacos.length > 0) {
-          enllacosHtml = "<div class='entry-section'><div class='entry-section-title'>Evidències:</div><ul>";
-          e.enllacos.forEach(l => {
-            enllacosHtml += `<li><a href="${escapeHtml(l.url)}" target="_blank">${escapeHtml(l.text)}</a></li>`;
-          });
-          enllacosHtml += "</ul></div>";
+          enllacosHTML = `
+            <div class="entry-section">
+              <div class="entry-section-title">Evidències i Enllaços</div>
+              <ul style="padding-left:20px; font-size:0.9rem;">
+                ${e.enllacos.map(l => `<li><a href="${l.url}" target="_blank" rel="noopener">${l.desc}</a></li>`).join('')}
+              </ul>
+            </div>
+          `;
         }
 
-        container.innerHTML += `
-          <div class="entry-card">
-            <div class="entry-header">
-              <span class="entry-title">${escapeHtml(e.titol)}</span>
-              <span class="badge badge-activity">${escapeHtml(e.tipusActivitat)}</span>
-            </div>
-            <div class="entry-meta">
-              <span>📅 ${new Date(e.dataHora).toLocaleString('ca-ES')}</span>
-              <span>✍️ Autor: <strong>${escapeHtml(autorNom)}</strong></span>
-            </div>
-            <p>${escapeHtml(e.descripcio)}</p>
-            ${e.decisions ? `<div class="entry-section"><div class="entry-section-title">Decisions:</div><p>${escapeHtml(e.decisions)}</p></div>` : ''}
-            ${e.resultats ? `<div class="entry-section"><div class="entry-section-title">Resultats:</div><p>${escapeHtml(e.resultats)}</p></div>` : ''}
-            ${enllacosHtml}
-            <div style="margin-top: 10px; text-align: right;">
-              <button class="btn btn-secondary btn-sm" onclick="carregarEdicioDiari('${e.id}')">Editar</button>
-              <button class="btn btn-danger btn-sm" onclick="eliminarEntradaDiari('${e.id}')">Esborrar</button>
-            </div>
+        card.innerHTML = `
+          <div class="entry-header">
+            <span class="entry-title">${e.titol}</span>
+            <span class="badge badge-activity">${e.tipus}</span>
+          </div>
+          <div class="entry-meta">
+            <span>📅 ${dFormatted}</span>
+            <span>👤 Autor: <strong>${e.autor}</strong></span>
+          </div>
+          <div style="font-size: 0.95rem; margin-bottom: 10px; white-space: pre-wrap;">${e.descripcio}</div>
+          ${e.decisions ? `<div class="entry-section"><div class="entry-section-title">Decisions Preses</div><div style="font-size:0.9rem; color:#4a5568;">${e.decisions}</div></div>` : ''}
+          ${e.resultats ? `<div class="entry-section"><div class="entry-section-title">Resultats / Conclusions</div><div style="font-size:0.9rem; color:#4a5568;">${e.resultats}</div></div>` : ''}
+          ${enllacosHTML}
+          <div style="margin-top: 15px; display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" onclick="carregarEntradaPerEditar('${e.id}')">✏️ Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="eliminarEntradaDiari('${e.id}')">🗑️ Eliminar</button>
           </div>
         `;
+        container.appendChild(card);
       });
     }
 
-    function carregarEdicioDiari(id) {
+    function filtrarEntradesDiariArray() {
+      const qText = document.getElementById('filtre-text').value.toLowerCase();
+      const fAutor = document.getElementById('filtre-autor').value;
+      const fTipus = document.getElementById('filtre-tipus').value;
+      const fDesde = document.getElementById('filtre-data-desde').value;
+      const fFinsa = document.getElementById('filtre-data-finsa').value;
+
+      return appState.diari.filter(e => {
+        if (fAutor && e.autor !== fAutor) return false;
+        if (fTipus && e.tipus !== fTipus) return false;
+        if (qText) {
+          const match = e.titol.toLowerCase().includes(qText) ||
+                        e.descripcio.toLowerCase().includes(qText) ||
+                        (e.decisions && e.decisions.toLowerCase().includes(qText));
+          if (!match) return false;
+        }
+        if (fDesde) {
+          if (new Date(e.data) < new Date(fDesde)) return false;
+        }
+        if (fFinsa) {
+          const fFinsaEnd = new Date(fFinsa);
+          fFinsaEnd.setHours(23, 59, 59);
+          if (new Date(e.data) > fFinsaEnd) return false;
+        }
+        return true;
+      });
+    }
+
+    function filtrarDiari() {
+      renderitzarDiari();
+    }
+
+    function carregarEntradaPerEditar(id) {
       const e = appState.diari.find(x => x.id === id);
       if (!e) return;
+
       document.getElementById('diari-id').value = e.id;
-      document.getElementById('diari-data').value = e.dataHora.slice(0, 16);
-      document.getElementById('diari-autor').value = e.autorId;
-      document.getElementById('diari-tipus').value = e.tipusActivitat;
+      document.getElementById('diari-data').value = e.data;
+      document.getElementById('diari-autor').value = e.autor;
+      document.getElementById('diari-tipus').value = e.tipus;
       document.getElementById('diari-titol').value = e.titol;
       document.getElementById('diari-descripcio').value = e.descripcio;
-      document.getElementById('diari-decisions').value = e.decisions || "";
-      document.getElementById('diari-resultats').value = e.resultats || "";
+      document.getElementById('diari-decisions').value = e.decisions || '';
+      document.getElementById('diari-resultats').value = e.resultats || '';
 
-      document.getElementById('container-enllacos').innerHTML = "";
+      const container = document.getElementById('container-enllacos');
+      container.innerHTML = '';
       if (e.enllacos) {
-        e.enllacos.forEach(l => afegirCampEnllac(l.url, l.text));
+        e.enllacos.forEach(l => afegirCampEnllac(l.url, l.desc));
       }
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function eliminarEntradaDiari(id) {
-      const e = appState.diari.find(x => x.id === id);
-      if (e && confirm(`Segur que vols eliminar l'entrada "${e.titol}"?`)) {
+      if (confirm("Segur que vols eliminar aquesta entrada del diari?")) {
+        const e = appState.diari.find(x => x.id === id);
+        if (e) registrarHistorial(e.autor, `S'ha eliminat l'entrada: "${e.titol}"`);
         appState.diari = appState.diari.filter(x => x.id !== id);
-        desarEstat(`Eliminada entrada del diari: "${e.titol}"`);
-        mostrarToast("Entrada eliminada", "info");
+        desarEstatLocalStorage();
+        renderitzarDiari();
+        renderitzarDashboard();
+        showToast("Entrada eliminada", "info");
       }
     }
 
-    // 3. GESTIÓ DE TASQUES (KANBAN)
+    /* ==========================================================================
+       3. SECCIÓ GESTIÓ DE TASQUES (KANBAN)
+       ========================================================================== */
     function afegirSubtascaForm() {
       const input = document.getElementById('tasca-nova-subtasca');
-      const text = input.value.trim();
-      if (text) {
-        subtasksFormTemp.push({ text: text, completada: false });
-        input.value = "";
-        renderSubtasquesForm();
-      }
+      const val = input.value.trim();
+      if (!val) return;
+
+      tempSubtasquesForm.push({ id: Date.now().toString(), text: val, completada: false });
+      input.value = '';
+      renderitzarSubtasquesForm();
     }
 
-    function renderSubtasquesForm() {
+    function renderitzarSubtasquesForm() {
       const container = document.getElementById('container-subtasques-form');
-      container.innerHTML = "";
-      subtasksFormTemp.forEach((st, idx) => {
-        container.innerHTML += `
-          <div class="sub-item">
-            <span>• ${escapeHtml(st.text)}</span>
-            <button type="button" class="btn btn-danger btn-sm" onclick="subtasksFormTemp.splice(${idx},1); renderSubtasquesForm();">✕</button>
-          </div>
+      container.innerHTML = '';
+      tempSubtasquesForm.forEach((st, idx) => {
+        const div = document.createElement('div');
+        div.className = 'subtask-item';
+        div.innerHTML = `
+          <span>• ${st.text}</span>
+          <button type="button" class="btn btn-danger btn-sm" style="padding:0 4px;" onclick="eliminarSubtascaForm(${idx})">✖</button>
         `;
+        container.appendChild(div);
       });
+    }
+
+    function eliminarSubtascaForm(idx) {
+      tempSubtasquesForm.splice(idx, 1);
+      renderitzarSubtasquesForm();
     }
 
     function guardarTasca(e) {
       e.preventDefault();
       const id = document.getElementById('tasca-id').value;
-      const descripcio = document.getElementById('tasca-descripcio').value.trim();
-      const limit = document.getElementById('tasca-limit').value;
-      const estat = document.getElementById('tasca-estat').value;
+      const descVal = document.getElementById('tasca-descripcio').value;
+      const limitVal = document.getElementById('tasca-limit').value;
+      const estatVal = document.getElementById('tasca-estat').value;
 
       const responsables = [];
-      document.querySelectorAll('.chk-resp:checked').forEach(chk => {
+      document.querySelectorAll('input[name="tasca-resp"]:checked').forEach(chk => {
         responsables.push(chk.value);
       });
 
       if (responsables.length === 0) {
-        mostrarToast("Heu de seleccionar com a mínim un responsable", "warning");
+        showToast("Selecciona almenys un responsable per a la tasca", "warning");
         return;
       }
 
       if (id) {
-        const t = appState.tasques.find(x => x.id === id);
-        if (t) {
-          Object.assign(t, { descripcio, limit, estat, responsables, subtasques: subtasksFormTemp });
-          desarEstat(`Actualitzada tasca: "${descripcio}"`);
-          mostrarToast("Tasca actualitzada", "success");
+        const idx = appState.tasques.findIndex(t => t.id === id);
+        if (idx !== -1) {
+          appState.tasques[idx] = {
+            ...appState.tasques[idx],
+            descripcio: descVal,
+            limit: limitVal,
+            estat: estatVal,
+            responsables: responsables,
+            subtasques: tempSubtasquesForm
+          };
+          registrarHistorial(responsables.join(', '), `S'ha editat la tasca: "${descVal}"`);
+          showToast("Tasca actualitzada", "success");
         }
       } else {
-        const newT = {
-          id: "t-" + Date.now(),
-          descripcio, limit, estat, responsables, subtasques: subtasksFormTemp
+        const novaTasca = {
+          id: Date.now().toString(),
+          descripcio: descVal,
+          limit: limitVal,
+          estat: estatVal,
+          responsables: responsables,
+          subtasques: [...tempSubtasquesForm]
         };
-        appState.tasques.push(newT);
-        desarEstat(`Nova tasca creada: "${descripcio}"`);
-        mostrarToast("Nova tasca afegida", "success");
+        appState.tasques.push(novaTasca);
+        registrarHistorial(responsables.join(', '), `Nova tasca creada: "${descVal}"`);
+        showToast("Tasca creada correctament", "success");
       }
 
+      desarEstatLocalStorage();
       netejarFormTasca();
+      renderitzarKanban();
+      renderitzarCalendari();
+      renderitzarDashboard();
     }
 
     function netejarFormTasca() {
+      document.getElementById('tasca-id').value = '';
       document.getElementById('form-tasca').reset();
-      document.getElementById('tasca-id').value = "";
-      subtasksFormTemp = [];
-      renderSubtasquesForm();
+      tempSubtasquesForm = [];
+      renderitzarSubtasquesForm();
     }
 
-    function renderitzarTasques() {
-      const cols = { 'Pendent': [], 'En procés': [], 'Bloquejada': [], 'Completada': [] };
+    function renderitzarKanban() {
+      const cols = {
+        'Pendent': document.getElementById('tasks-pendent'),
+        'En procés': document.getElementById('tasks-proces'),
+        'Bloquejada': document.getElementById('tasks-bloquejada'),
+        'Completada': document.getElementById('tasks-completada')
+      };
+
+      const counts = { 'Pendent': 0, 'En procés': 0, 'Bloquejada': 0, 'Completada': 0 };
+
+      Object.values(cols).forEach(c => c.innerHTML = '');
+
       appState.tasques.forEach(t => {
-        if (cols[t.estat]) cols[t.estat].push(t);
-      });
+        if (!cols[t.estat]) return;
+        counts[t.estat]++;
 
-      ['pendent', 'proces', 'bloquejada', 'completada'].forEach(key => {
-        const mapEstat = { 'pendent': 'Pendent', 'proces': 'En procés', 'bloquejada': 'Bloquejada', 'completada': 'Completada' };
-        const list = cols[mapEstat[key]];
-        document.getElementById(`count-${key}`).innerText = list.length;
-        const container = document.getElementById(`tasks-${key}`);
-        container.innerHTML = "";
+        const card = document.createElement('div');
+        const estatSlug = t.estat.toLowerCase().replace(' ', '').replace('é', 'e');
+        
+        const avui = new Date().toISOString().slice(0, 10);
+        let statusDeadline = '';
+        if (t.estat === 'Completada') {
+          statusDeadline = `<span class="badge-deadline badge-done">Completada</span>`;
+        } else if (t.limit < avui) {
+          statusDeadline = `<span class="badge-deadline badge-vencuda">⚠️ Vencuda</span>`;
+        } else if (t.limit === avui) {
+          statusDeadline = `<span class="badge-deadline badge-urgent">🔥 Venç Avui</span>`;
+        } else {
+          statusDeadline = `<span class="badge-deadline badge-ok">📅 ${t.limit}</span>`;
+        }
 
-        list.forEach(t => {
-          const names = t.responsables.map(rId => {
-            const m = appState.equip.find(x => x.id === rId);
-            return m ? m.nom : 'Desconegut';
-          }).join(', ');
+        const isVencudaClass = (t.limit < avui && t.estat !== 'Completada') ? 'task-vencuda' : '';
+        card.className = `task-card task-${estatSlug} ${isVencudaClass}`;
 
-          let badgeLimit = "";
-          let isVencuda = false;
-          if (t.limit) {
-            const today = new Date().toISOString().slice(0, 10);
-            if (t.estat === 'Completada') {
-              badgeLimit = `<span class="badge-deadline badge-done">Finalitzada</span>`;
-            } else if (t.limit < today) {
-              badgeLimit = `<span class="badge-deadline badge-vencuda">Vencuda (${t.limit})</span>`;
-              isVencuda = true;
-            } else if (t.limit === today) {
-              badgeLimit = `<span class="badge-deadline badge-urgent">Venc avui</span>`;
-            } else {
-              badgeLimit = `<span class="badge-deadline badge-ok">Límit: ${t.limit}</span>`;
-            }
-          }
-
-          let subHtml = "";
-          if (t.subtasques && t.subtasques.length > 0) {
-            const doneCount = t.subtasques.filter(s => s.completada).length;
-            subHtml = `<div class="subtask-progress">Subtasques: ${doneCount}/${t.subtasques.length}</div>`;
-          }
-
-          container.innerHTML += `
-            <div class="task-card task-${key} ${isVencuda ? 'task-vencuda' : ''}">
-              <div class="task-title">${escapeHtml(t.descripcio)}</div>
-              <div class="task-meta">👤 ${escapeHtml(names)}</div>
-              ${badgeLimit}
-              ${subHtml}
-              <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <select style="width: auto; padding: 2px 5px; font-size: 0.75rem;" onchange="canviarEstatTasca('${t.id}', this.value)">
-                  <option value="Pendent" ${t.estat === 'Pendent' ? 'selected' : ''}>Pendent</option>
-                  <option value="En procés" ${t.estat === 'En procés' ? 'selected' : ''}>En procés</option>
-                  <option value="Bloquejada" ${t.estat === 'Bloquejada' ? 'selected' : ''}>Bloquejada</option>
-                  <option value="Completada" ${t.estat === 'Completada' ? 'selected' : ''}>Completada</option>
-                </select>
-                <div>
-                  <button class="btn btn-secondary btn-sm" onclick="carregarEdicioTasca('${t.id}')">✏️</button>
-                  <button class="btn btn-danger btn-sm" onclick="eliminarTasca('${t.id}')">🗑️</button>
+        let subtasquesHTML = '';
+        if (t.subtasques && t.subtasques.length > 0) {
+          const comp = t.subtasques.filter(s => s.completada).length;
+          const total = t.subtasques.length;
+          subtasquesHTML = `
+            <div class="subtask-progress">Subtasques: ${comp}/${total}</div>
+            <div class="subtask-list">
+              ${t.subtasques.map((s, idx) => `
+                <div class="subtask-item ${s.completada ? 'completed' : ''}">
+                  <input type="checkbox" ${s.completada ? 'checked' : ''} onchange="toggleSubtasca('${t.id}', ${idx})">
+                  <span>${s.text}</span>
                 </div>
-              </div>
+              `).join('')}
             </div>
           `;
-        });
+        }
+
+        card.innerHTML = `
+          <div class="task-title">${t.descripcio}</div>
+          <div class="task-meta">
+            👤 ${t.responsables.join(', ')} <br>
+            ${statusDeadline}
+          </div>
+          ${subtasquesHTML}
+          <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+            <select class="form-control" style="font-size:0.75rem; padding:3px;" onchange="canviarEstatTasca('${t.id}', this.value)">
+              <option value="Pendent" ${t.estat==='Pendent'?'selected':''}>Pendent</option>
+              <option value="En procés" ${t.estat==='En procés'?'selected':''}>En procés</option>
+              <option value="Bloquejada" ${t.estat==='Bloquejada'?'selected':''}>Bloquejada</option>
+              <option value="Completada" ${t.estat==='Completada'?'selected':''}>Completada</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" style="padding:2px 6px;" onclick="carregarTascaEditar('${t.id}')">✏️</button>
+            <button class="btn btn-danger btn-sm" style="padding:2px 6px;" onclick="eliminarTasca('${t.id}')">🗑️</button>
+          </div>
+        `;
+
+        cols[t.estat].appendChild(card);
       });
+
+      document.getElementById('count-pendent').innerText = counts['Pendent'];
+      document.getElementById('count-proces').innerText = counts['En procés'];
+      document.getElementById('count-bloquejada').innerText = counts['Bloquejada'];
+      document.getElementById('count-completada').innerText = counts['Completada'];
     }
 
-    function canviarEstatTasca(id, nouEstat) {
-      const t = appState.tasques.find(x => x.id === id);
-      if (t) {
-        t.estat = nouEstat;
-        desarEstat(`Estat de tasca canviat a "${nouEstat}": ${t.descripcio}`);
+    function toggleSubtasca(tascaId, subtascaIdx) {
+      const tasca = appState.tasques.find(t => t.id === tascaId);
+      if (tasca && tasca.subtasques && tasca.subtasques[subtascaIdx]) {
+        tasca.subtasques[subtascaIdx].completada = !tasca.subtasques[subtascaIdx].completada;
+        desarEstatLocalStorage();
+        renderitzarKanban();
       }
     }
 
-    function carregarEdicioTasca(id) {
+    function canviarEstatTasca(id, nouEstat) {
+      const tasca = appState.tasques.find(t => t.id === id);
+      if (tasca) {
+        const antic = tasca.estat;
+        tasca.estat = nouEstat;
+        registrarHistorial(tasca.responsables.join(', '), `Tasca "${tasca.descripcio}" canviada de ${antic} a ${nouEstat}`);
+        desarEstatLocalStorage();
+        renderitzarKanban();
+        renderitzarCalendari();
+        renderitzarDashboard();
+        showToast(`Tasca moguda a ${nouEstat}`, "info");
+      }
+    }
+
+    function carregarTascaEditar(id) {
       const t = appState.tasques.find(x => x.id === id);
       if (!t) return;
+
       document.getElementById('tasca-id').value = t.id;
       document.getElementById('tasca-descripcio').value = t.descripcio;
       document.getElementById('tasca-limit').value = t.limit;
       document.getElementById('tasca-estat').value = t.estat;
 
-      document.querySelectorAll('.chk-resp').forEach(chk => {
+      document.querySelectorAll('input[name="tasca-resp"]').forEach(chk => {
         chk.checked = t.responsables.includes(chk.value);
       });
 
-      subtasksFormTemp = t.subtasques ? JSON.parse(JSON.stringify(t.subtasques)) : [];
-      renderSubtasquesForm();
+      tempSubtasquesForm = t.subtasques ? [...t.subtasques] : [];
+      renderitzarSubtasquesForm();
+
+      showTab('tasques');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function eliminarTasca(id) {
-      const t = appState.tasques.find(x => x.id === id);
-      if (t && confirm(`Vols eliminar la tasca "${t.descripcio}"?`)) {
+      if (confirm("Vols eliminar aquesta tasca?")) {
+        const t = appState.tasques.find(x => x.id === id);
+        if (t) registrarHistorial(t.responsables.join(', '), `Eliminada tasca: "${t.descripcio}"`);
         appState.tasques = appState.tasques.filter(x => x.id !== id);
-        desarEstat(`Eliminada tasca: "${t.descripcio}"`);
-        mostrarToast("Tasca eliminada", "info");
+        desarEstatLocalStorage();
+        renderitzarKanban();
+        renderitzarCalendari();
+        renderitzarDashboard();
+        showToast("Tasca eliminada", "info");
       }
     }
 
-    // 4. CALENDARI DE TREBALL
-    function renderitzarCalendari() {
-      const daysContainer = document.getElementById('calendar-days-container');
-      if (!daysContainer) return;
-      daysContainer.innerHTML = "";
+    /* ==========================================================================
+       4. SECCIÓ CONTROL DE RISCOS I INCIDÈNCIES
+       ========================================================================== */
+    function calcularSeveritat(probabilitat, impacte) {
+      if (probabilitat === 'Alta' && impacte === 'Alt') return 'Alta';
+      if ((probabilitat === 'Alta' && impacte === 'Mitjà') || (probabilitat === 'Mitjana' && impacte === 'Alt')) return 'Alta';
+      if ((probabilitat === 'Baixa' && impacte === 'Alt') || (probabilitat === 'Mitjana' && impacte === 'Mitjà') || (probabilitat === 'Alta' && impacte === 'Baix')) return 'Mitjana';
+      return 'Baixa';
+    }
 
-      const year = currentDateCalendar.getFullYear();
-      const month = currentDateCalendar.getMonth();
+    function actualitzarSeveritatVistaForm() {
+      const prob = document.getElementById('risc-probabilitat').value;
+      const imp = document.getElementById('risc-impacte').value;
+      const sev = calcularSeveritat(prob, imp);
 
-      const monthNames = ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"];
-      document.getElementById('calendar-title').innerText = `${monthNames[month]} ${year}`;
+      const badge = document.getElementById('preview-severitat-badge');
+      badge.innerText = sev;
+      badge.className = `badge badge-sev-${sev.toLowerCase().replace('à', 'a')}`;
+    }
 
-      const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7; // Ajust a Dilluns (0)
-      const lastDay = new Date(year, month + 1, 0).getDate();
-      const prevLastDay = new Date(year, month, 0).getDate();
+    function guardarRisc(e) {
+      e.preventDefault();
+      const id = document.getElementById('risc-id').value;
+      const titol = document.getElementById('risc-titol').value;
+      const tipus = document.getElementById('risc-tipus').value;
+      const responsable = document.getElementById('risc-responsable').value;
+      const probabilitat = document.getElementById('risc-probabilitat').value;
+      const impacte = document.getElementById('risc-impacte').value;
+      const estat = document.getElementById('risc-estat').value;
+      const mitigacio = document.getElementById('risc-mitigacio').value;
 
-      const todayStr = new Date().toISOString().slice(0, 10);
+      const severitat = calcularSeveritat(probabilitat, impacte);
 
-      // Dies del mes anterior
-      for (let x = firstDayIndex; x > 0; x--) {
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'calendar-day-cell other-month';
-        dayDiv.innerHTML = `<div class="calendar-day-num">${prevLastDay - x + 1}</div>`;
-        daysContainer.appendChild(dayDiv);
+      if (id) {
+        const idx = appState.riscos.findIndex(r => r.id === id);
+        if (idx !== -1) {
+          appState.riscos[idx] = {
+            ...appState.riscos[idx],
+            titol, tipus, responsable, probabilitat, impacte, severitat, estat, mitigacio
+          };
+          registrarHistorial(responsable, `S'ha actualitzat el risc/incidència: "${titol}"`);
+          showToast("Risc actualitzat correctament", "success");
+        }
+      } else {
+        const nouRisc = {
+          id: Date.now().toString(),
+          titol, tipus, responsable, probabilitat, impacte, severitat, estat, mitigacio
+        };
+        appState.riscos.push(nouRisc);
+        registrarHistorial(responsable, `Nou risc/incidència registrat: "${titol}" (Severitat: ${severitat})`);
+        showToast("Risc registrat correctament", "success");
       }
 
-      // Dies del mes actual
-      for (let day = 1; day <= lastDay; day++) {
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'calendar-day-cell';
+      desarEstatLocalStorage();
+      netejarFormRisc();
+      renderitzarRiscos();
+    }
 
-        const monthFormatted = String(month + 1).padStart(2, '0');
-        const dayFormatted = String(day).padStart(2, '0');
-        const dateStr = `${year}-${monthFormatted}-${dayFormatted}`;
+    function netejarFormRisc() {
+      document.getElementById('risc-id').value = '';
+      document.getElementById('form-risc').reset();
+      actualitzarSeveritatVistaForm();
+    }
 
-        if (dateStr === todayStr) {
-          dayDiv.classList.add('today');
-        }
+    function renderitzarRiscos() {
+      const tbody = document.getElementById('taula-riscos');
+      if (!tbody) return;
+      tbody.innerHTML = '';
 
-        dayDiv.innerHTML = `<div class="calendar-day-num">${day}</div>`;
+      if (!appState.riscos || appState.riscos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#718096; padding:20px;">No hi ha cap risc o incidència registrat.</td></tr>';
+        return;
+      }
 
-        // Tasques associades a aquest dia
-        const dayTasks = appState.tasques.filter(t => t.limit === dateStr);
-        dayTasks.forEach(t => {
-          const taskElem = document.createElement('div');
-          let classStatus = 'st-pendent';
-          if (t.estat === 'En procés') classStatus = 'st-proces';
-          else if (t.estat === 'Bloquejada') classStatus = 'st-bloquejada';
-          else if (t.estat === 'Completada') classStatus = 'st-completada';
+      appState.riscos.forEach(r => {
+        const tr = document.createElement('tr');
+        const sevClass = `badge-sev-${r.severitat.toLowerCase().replace('à', 'a')}`;
 
-          taskElem.className = `calendar-task-item ${classStatus}`;
-          taskElem.innerText = t.descripcio;
-          taskElem.onclick = (e) => {
+        tr.innerHTML = `
+          <td><strong>${r.titol}</strong></td>
+          <td><span class="badge" style="background:#e2e8f0; color:#2d3748;">${r.tipus}</span></td>
+          <td>👤 ${r.responsable}</td>
+          <td>${r.probabilitat}</td>
+          <td>${r.impacte}</td>
+          <td><span class="badge ${sevClass}">${r.severitat}</span></td>
+          <td><strong>${r.estat}</strong></td>
+          <td style="font-size:0.85rem; max-width:250px;">${r.mitigacio}</td>
+          <td>
+            <div style="display:flex; gap:5px;">
+              <button class="btn btn-secondary btn-sm" onclick="carregarRiscEditar('${r.id}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarRisc('${r.id}')">🗑️</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function carregarRiscEditar(id) {
+      const r = appState.riscos.find(x => x.id === id);
+      if (!r) return;
+
+      document.getElementById('risc-id').value = r.id;
+      document.getElementById('risc-titol').value = r.titol;
+      document.getElementById('risc-tipus').value = r.tipus;
+      document.getElementById('risc-responsable').value = r.responsable;
+      document.getElementById('risc-probabilitat').value = r.probabilitat;
+      document.getElementById('risc-impacte').value = r.impacte;
+      document.getElementById('risc-estat').value = r.estat;
+      document.getElementById('risc-mitigacio').value = r.mitigacio;
+
+      actualitzarSeveritatVistaForm();
+      showTab('riscos');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function eliminarRisc(id) {
+      if (confirm("Estàs segur de voler eliminar aquest risc/incidència?")) {
+        const r = appState.riscos.find(x => x.id === id);
+        if (r) registrarHistorial(r.responsable, `S'ha eliminat el risc: "${r.titol}"`);
+        appState.riscos = appState.riscos.filter(x => x.id !== id);
+        desarEstatLocalStorage();
+        renderitzarRiscos();
+        showToast("Risc eliminat", "info");
+      }
+    }
+
+    /* ==========================================================================
+       5. SECCIÓ CALENDARI DE TREBALL
+       ========================================================================== */
+    function renderitzarCalendari() {
+      const container = document.getElementById('calendar-days-container');
+      const title = document.getElementById('calendar-title');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const any = calendarCurrentDate.getFullYear();
+      const mes = calendarCurrentDate.getMonth();
+
+      const mesosNoms = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
+      title.innerText = `${mesosNoms[mes]} ${any}`;
+
+      const primerDiaMes = new Date(any, mes, 1);
+      const ultimDiaMes = new Date(any, mes + 1, 0);
+
+      let diaSetmanaComencament = primerDiaMes.getDay() - 1;
+      if (diaSetmanaComencament === -1) diaSetmanaComencament = 6;
+
+      const diesTotalMes = ultimDiaMes.getDate();
+      const ultimDiaMesAnterior = new Date(any, mes, 0).getDate();
+
+      for (let i = diaSetmanaComencament; i > 0; i--) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day-cell other-month';
+        cell.innerHTML = `<div class="calendar-day-num">${ultimDiaMesAnterior - i + 1}</div>`;
+        container.appendChild(cell);
+      }
+
+      const avuiStr = new Date().toISOString().slice(0, 10);
+
+      for (let d = 1; d <= diesTotalMes; d++) {
+        const currentDataStr = `${any}-${String(mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const cell = document.createElement('div');
+        cell.className = `calendar-day-cell ${currentDataStr === avuiStr ? 'today' : ''}`;
+        cell.innerHTML = `<div class="calendar-day-num">${d}</div>`;
+
+        const tasquesDia = appState.tasques.filter(t => t.limit === currentDataStr);
+        tasquesDia.forEach(t => {
+          const item = document.createElement('div');
+          const slug = t.estat.toLowerCase().replace(' ', '').replace('é', 'e');
+          item.className = `calendar-task-item st-${slug}`;
+          item.innerText = t.descripcio;
+          item.onclick = (e) => {
             e.stopPropagation();
-            mostrarDetallsTascaModal(t.id);
+            obrirModalTasca(t);
           };
-          dayDiv.appendChild(taskElem);
+          cell.appendChild(item);
         });
 
-        daysContainer.appendChild(dayDiv);
+        container.appendChild(cell);
       }
 
-      // Dies del mes següent
-      const totalCells = firstDayIndex + lastDay;
-      const nextDays = (7 - (totalCells % 7)) % 7;
-      for (let j = 1; j <= nextDays; j++) {
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'calendar-day-cell other-month';
-        dayDiv.innerHTML = `<div class="calendar-day-num">${j}</div>`;
-        daysContainer.appendChild(dayDiv);
+      const totalCellsInGrid = diaSetmanaComencament + diesTotalMes;
+      const remainingCells = (7 - (totalCellsInGrid % 7)) % 7;
+      for (let i = 1; i <= remainingCells; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day-cell other-month';
+        cell.innerHTML = `<div class="calendar-day-num">${i}</div>`;
+        container.appendChild(cell);
       }
     }
 
-    function canviarMesCalendari(offset) {
-      currentDateCalendar.setMonth(currentDateCalendar.getMonth() + offset);
+    function canviarMesCalendari(delta) {
+      calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + delta);
       renderitzarCalendari();
     }
 
     function anarMesActual() {
-      currentDateCalendar = new Date();
+      calendarCurrentDate = new Date();
       renderitzarCalendari();
     }
 
-    function mostrarDetallsTascaModal(id) {
-      const t = appState.tasques.find(x => x.id === id);
-      if (!t) return;
-
-      document.getElementById('modal-task-title').innerText = t.descripcio;
-      document.getElementById('modal-task-date').innerText = t.limit || 'Sense data límit';
-
-      const names = t.responsables.map(rId => {
-        const m = appState.equip.find(x => x.id === rId);
-        return m ? m.nom : 'Desconegut';
-      }).join(', ');
-      document.getElementById('modal-task-resp').innerText = names || 'Sense assignar';
-
-      const statusBadge = document.getElementById('modal-task-status');
-      statusBadge.innerText = t.estat;
-      statusBadge.className = 'badge';
-      if (t.estat === 'Pendent') statusBadge.classList.add('badge-urgent');
-      else if (t.estat === 'En procés') statusBadge.classList.add('badge-ok');
-      else if (t.estat === 'Bloquejada') statusBadge.classList.add('badge-vencuda');
-      else if (t.estat === 'Completada') statusBadge.classList.add('badge-done');
-
-      document.getElementById('modal-tasca-detalls').classList.add('active');
+    function obrirModalTasca(t) {
+      document.getElementById('modal-tasca-titol').innerText = t.descripcio;
+      let subtHTML = '';
+      if (t.subtasques && t.subtasques.length > 0) {
+        subtHTML = `<p><strong>Subtasques:</strong></p><ul>${t.subtasques.map(s => `<li>${s.completada ? '✅' : '⏳'} ${s.text}</li>`).join('')}</ul>`;
+      }
+      document.getElementById('modal-tasca-contingut').innerHTML = `
+        <p><strong>Estat:</strong> ${t.estat}</p>
+        <p><strong>Data Límit:</strong> ${t.limit}</p>
+        <p><strong>Responsable/s:</strong> ${t.responsables.join(', ')}</p>
+        ${subtHTML}
+      `;
+      document.getElementById('modal-tasca').classList.add('active');
     }
 
-    function tancarModalDetalls() {
-      document.getElementById('modal-tasca-detalls').classList.remove('active');
+    function tancarModalTasca() {
+      document.getElementById('modal-tasca').classList.remove('active');
     }
 
-    // 5. SEGUIMENT I INDICADORS (DASHBOARD)
+    /* ==========================================================================
+       6. SECCIÓ SEGUIMENT I INDICADORS (DASHBOARD)
+       ========================================================================== */
     function renderitzarDashboard() {
-      const totalTasks = appState.tasques.length;
-      const doneTasks = appState.tasques.filter(t => t.estat === 'Completada').length;
-      const pc = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+      const totalTasques = appState.tasques.length;
+      const completades = appState.tasques.filter(t => t.estat === 'Completada').length;
+      const pc = totalTasques > 0 ? Math.round((completades / totalTasques) * 100) : 0;
 
-      document.getElementById('dash-progress-pc').innerText = pc + "%";
-      document.getElementById('dash-total-tasks').innerText = totalTasks;
+      document.getElementById('dash-progress-pc').innerText = `${pc}%`;
+      document.getElementById('dash-total-tasks').innerText = totalTasques;
       document.getElementById('dash-total-entries').innerText = appState.diari.length;
-      document.getElementById('dash-progress-bar').style.width = pc + "%";
+      document.getElementById('dash-progress-bar').style.width = `${pc}%`;
 
       const tbody = document.getElementById('dash-taula-participacio');
-      tbody.innerHTML = "";
+      if (!tbody) return;
+      tbody.innerHTML = '';
 
       appState.equip.forEach(m => {
-        const entriesCreated = appState.diari.filter(e => e.autorId === m.id).length;
-        const tasksAssigned = appState.tasques.filter(t => t.responsables.includes(m.id)).length;
-        const tasksCompleted = appState.tasques.filter(t => t.responsables.includes(m.id) && t.estat === 'Completada').length;
+        const entCreades = appState.diari.filter(e => e.autor === m.nom).length;
+        const tasquesAssig = appState.tasques.filter(t => t.responsables.includes(m.nom)).length;
+        const tasquesComp = appState.tasques.filter(t => t.responsables.includes(m.nom) && t.estat === 'Completada').length;
 
-        tbody.innerHTML += `
-          <tr>
-            <td><strong>${escapeHtml(m.nom)}</strong></td>
-            <td>${entriesCreated}</td>
-            <td>${tasksAssigned}</td>
-            <td>${tasksCompleted}</td>
-          </tr>
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${m.nom}</strong></td>
+          <td>${entCreades}</td>
+          <td>${tasquesAssig}</td>
+          <td>${tasquesComp}</td>
         `;
+        tbody.appendChild(tr);
       });
     }
 
-    // 6. HISTORIAL DE CANVIS
+    /* ==========================================================================
+       7. SECCIÓ HISTORIAL DE CANVIS
+       ========================================================================== */
     function renderitzarHistorial() {
       const tbody = document.getElementById('taula-historial');
-      tbody.innerHTML = "";
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
       appState.historial.forEach(h => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${new Date(h.timestamp).toLocaleString('ca-ES')}</td>
-            <td><strong>${escapeHtml(h.usuari)}</strong></td>
-            <td>${escapeHtml(h.accio)}</td>
-          </tr>
+        const d = new Date(h.timestamp).toLocaleString('ca-ES');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-size:0.85rem; color:#718096;">${d}</td>
+          <td><strong>${h.usuari}</strong></td>
+          <td style="font-size:0.9rem;">${h.accio}</td>
         `;
+        tbody.appendChild(tr);
       });
     }
 
-    // 7. GESTIÓ DE DADES (IMPORT/EXPORT & SMART MERGE)
+    /* ==========================================================================
+       8. GESTIÓ DE DADES (EXPORT/IMPORT JSON & REINICI)
+       ========================================================================== */
     function exportarJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
       const downloadAnchor = document.createElement('a');
+      const filename = `Quadern_UOC_${appState.infoGeneral.nom.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.json`;
+
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `Quadern_Projecte_UOC_${new Date().toISOString().slice(0, 10)}.json`);
+      downloadAnchor.setAttribute("download", filename);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
-      mostrarToast("S'ha descarregat el fitxer JSON", "success");
+
+      showToast("JSON descarregat correctament", "success");
     }
 
     function importarJSON(event) {
@@ -1782,65 +2110,66 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
-          const imported = JSON.parse(e.target.result);
-          fusionarDades(imported);
+          const importedData = JSON.parse(e.target.result);
+
+          if (importedData.infoGeneral) appState.infoGeneral = importedData.infoGeneral;
+
+          if (importedData.equip && Array.isArray(importedData.equip)) {
+            importedData.equip.forEach(mImp => {
+              if (!appState.equip.some(m => m.id === mImp.id || m.nom === mImp.nom)) {
+                appState.equip.push(mImp);
+              }
+            });
+          }
+
+          if (importedData.diari && Array.isArray(importedData.diari)) {
+            importedData.diari.forEach(dImp => {
+              if (!appState.diari.some(d => d.id === dImp.id)) {
+                appState.diari.push(dImp);
+              }
+            });
+            appState.diari.sort((a, b) => new Date(b.data) - new Date(a.data));
+          }
+
+          if (importedData.tasques && Array.isArray(importedData.tasques)) {
+            importedData.tasques.forEach(tImp => {
+              if (!appState.tasques.some(t => t.id === tImp.id)) {
+                appState.tasques.push(tImp);
+              }
+            });
+          }
+
+          if (importedData.riscos && Array.isArray(importedData.riscos)) {
+            importedData.riscos.forEach(rImp => {
+              if (!appState.riscos.some(r => r.id === rImp.id)) {
+                appState.riscos.push(rImp);
+              }
+            });
+          }
+
+          if (importedData.historial && Array.isArray(importedData.historial)) {
+            importedData.historial.forEach(hImp => {
+              if (!appState.historial.some(h => h.id === hImp.id)) {
+                appState.historial.push(hImp);
+              }
+            });
+            appState.historial.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          }
+
+          registrarHistorial("Sistemes", "S'han importat i fusionat dades des d'un fitxer JSON extern.");
+          desarEstatLocalStorage();
+          actualitzarTotesVistes();
+          showToast("Dades importades i fusionades amb èxit!", "success");
         } catch (err) {
-          mostrarToast("Error en processar el fitxer JSON", "danger");
+          alert("Error en el format del fitxer JSON d'importació.");
         }
       };
       reader.readAsText(file);
     }
 
-    function fusionarDades(imported) {
-      let addEntries = 0, addTasks = 0;
-
-      // Fusionar Informació General si està buida
-      if (!appState.projecte.nom && imported.projecte?.nom) appState.projecte.nom = imported.projecte.nom;
-      if (!appState.projecte.assignatura && imported.projecte?.assignatura) appState.projecte.assignatura = imported.projecte.assignatura;
-      if (!appState.projecte.professora && imported.projecte?.professora) appState.projecte.professora = imported.projecte.professora;
-
-      // Fusionar Equip
-      if (Array.isArray(imported.equip)) {
-        imported.equip.forEach(impM => {
-          if (!appState.equip.some(m => m.id === impM.id || m.nom === impM.nom)) {
-            appState.equip.push(impM);
-          }
-        });
-      }
-
-      // Fusionar Diari
-      if (Array.isArray(imported.diari)) {
-        imported.diari.forEach(impD => {
-          if (!appState.diari.some(d => d.id === impD.id)) {
-            appState.diari.push(impD);
-            addEntries++;
-          }
-        });
-      }
-
-      // Fusionar Tasques
-      if (Array.isArray(imported.tasques)) {
-        imported.tasques.forEach(impT => {
-          const existingIdx = appState.tasques.findIndex(t => t.id === impT.id);
-          if (existingIdx === -1) {
-            appState.tasques.push(impT);
-            addTasks++;
-          } else {
-            appState.tasques[existingIdx] = impT;
-          }
-        });
-      }
-
-      // Reordenar diari per data
-      appState.diari.sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
-
-      desarEstat(`S'han importat i fusionat dades d'un fitxer JSON (+${addEntries} entrades diari, +${addTasks} tasques)`);
-      mostrarToast(`Fusió completada (+${addEntries} entrades, +${addTasks} tasques)`, "success");
-    }
-
-    function reiniciarDades() {
-      if (confirm("ATENCIÓ: Vols esborrar totes les dades emmagatzemades localment? Aquesta acció no es pot desfer.")) {
-        localStorage.removeItem("quadern_uoc_state");
+    function reiniciarTot() {
+      if (confirm("⚠️ Estàs SEGUR que vols reiniciar el quadern? Es perdran totes les dades no descarregades.")) {
+        localStorage.removeItem(STORAGE_KEY);
         location.reload();
       }
     }
