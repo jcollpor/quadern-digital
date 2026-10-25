@@ -1,1 +1,29 @@
+## 5. Fase 4: Protecció de Dades, Usabilitat i Exportació a PDF (Prompt 4)
 
+### 5.1 Enllaç a la nova versió del codi
+- **Repositori / Arxiu:** [Versió 3 - quadern-3.html](https://github.com/jcollpor/quadern-digital/blob/main/quadern-3.html)
+
+---
+
+### 5.2 Registre de Prompts de la Fase 4
+
+#### Prompt 4.1: Fusió Intel·ligent de JSON i Còpia de Seguretat (Auto-Backup)
+> "Modifica el sistema d'importació de fitxers JSON de l'aplicació per evitar la sobreescriptura accidental de dades i afegir un mecanisme de recuperació de seguretat.
+>
+> **Requeriments:**
+> 1. **Auto-Backup:** Guarda l'estat a `localStorage` sota la clau `quadern_backup_pre_import` abans d'importar i afegeix el botó 'Desfer darrera importació'.
+> 2. **Modal de Fusió:** Analitza el fitxer mostrant un resum d'entrades/tasques noves i permet triar entre 'Fusionar dades' (combina per IDs sense esborrar res) o 'Reemplaçar-ho tot'."
+
+#### Prompt 4.2: Mode Fosc / Clar (Theme Switcher)
+> "Implementa un selector de tema (Mode Fosc / Mode Clar) a l'aplicació utilitzant variables CSS pures i persistència de preferències.
+>
+> **Requeriments:**
+> 1. **Variables CSS:** Defineix la paleta per defecte i la variant fosca `[data-theme="dark"]`.
+> 2. **Botó Toggle:** Afegeix un botó amb icona (☀️/🌙) a la capçalera i desa l'estat a `localStorage`."
+
+#### Prompt 4.3: Generació d'Informe per Impressió / PDF
+> "Afegeix una funció per exportar o imprimir un informe net del quadern de projecte en format PDF utilitzant `@media print`.
+>
+> **Requeriments:**
+> 1. **CSS d'Impressió:** Oculta navegació, botons d'acció i notificacions. Neteja el format a text negre sobre fons blanc.
+> 2. **Botó d'acció:** Afegeix el botó 'Desar en PDF / Imprimir informe' que executi `window.print()`."
