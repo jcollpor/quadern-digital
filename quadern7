@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quadern Digital de Projecte - Enginyeria Biomèdica UOC</title>
+  <style>
+    :root {
+      --primary: #004080;
+      --primary-hover: #003060;
+      --secondary: #eef4fb;
+      --accent: #0076d6;
+      --text: #2c3e50;
+      --bg: #f4f7f6;
+      --card-bg: #ffffff;
+      --border: #dcdfe6;
+      --danger: #d9534f;
+      --warning: #f0ad4e;
+      --success: #5cb85c;
+      --info: #5bc0de;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    header .subtitle {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    /* INDICADOR VISUAL DE DESAT EN TEMPS REAL */
+    .save-status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #5cb85c;
+      box-shadow: 0 0 8px #5cb85c;
+      transition: background-color 0.3s ease;
+    }
+
+    .status-dot.saving {
+      background-color: #f0ad4e;
+      box-shadow: 0 0 8px #f0ad4e;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    .banner-privacy {
+      background-color: #fff3cd;
+      color: #856404;
+      padding: 10px 20px;
+      border-left: 5px solid #ffebaba0;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.05);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    nav {
+      display: flex;
+      gap: 5px;
+      background: #e2e8f0;
+      padding: 5px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    nav button {
+      flex: 1;
+      padding: 10px 15px;
+      border: none;
+      background: transparent;
+      color: #4a5568;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    nav button:hover {
+      background: rgba(255,255,255,0.5);
+      color: var(--primary);
+    }
+
+    nav button.active {
+      background: var(--card-bg);
+      color: var(--primary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    .form-control, select, textarea, input[type="text"], input[type="datetime-local"], input[type="date"], input[type="email"], input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus, select:focus, textarea:focus, input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: #e2e8f0; color: #2d3748; }
+    .btn-secondary:hover { background: #cbd5e0; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: #c9302c; }
+    .btn-sm { padding: 5px 10px; font-size: 0.85rem; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table th, table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    table th { background: var(--secondary); color: var(--primary); font-weight: 600; }
+
+    .entry-card {
+      border-left: 4px solid var(--accent);
+      background: white;
+      padding: 18px;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      margin-bottom: 15px;
+      border-top: 1px solid #edf2f7;
+      border-right: 1px solid #edf2f7;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .entry-title { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+    .entry-meta { font-size: 0.85rem; color: #718096; display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+    .badge-activity { background: #ebf8ff; color: #2b6cb0; }
+
+    /* TAULER KANBAN AMB DRAG & DROP */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    @media (max-width: 900px) {
+      .kanban-board { grid-template-columns: 1fr; }
+    }
+
+    .kanban-col {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 12px;
+      border: 2px dashed transparent;
+      min-height: 400px;
+      transition: all 0.2s ease;
+    }
+
+    /* Efecte quan s'arrossega una tasca a sobre de la columna */
+    .kanban-col.drag-over {
+      background: #e2e8f0;
+      border-color: var(--accent);
+    }
+
+    .kanban-col-header {
+      font-weight: 700;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .col-pendent { border-color: var(--warning); color: #b7791f; }
+    .col-proces { border-color: var(--accent); color: #2b6cb0; }
+    .col-bloquejada { border-color: var(--danger); color: #c53030; }
+    .col-completada { border-color: var(--success); color: #2f855a; }
+
+    .task-card {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+      border-left: 3px solid;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .task-card:active { cursor: grabbing; }
+    .task-card.dragging { opacity: 0.4; transform: scale(0.98); }
+
+    .task-pendent { border-left-color: var(--warning); }
+    .task-proces { border-left-color: var(--accent); }
+    .task-bloquejada { border-left-color: var(--danger); }
+    .task-completada { border-left-color: var(--success); }
+
+    .task-title { font-weight: 600; margin-bottom: 6px; font-size: 0.95rem; }
+    .task-meta { font-size: 0.8rem; color: #718096; margin-bottom: 8px; }
+
+    /* ESTILS DE MULTIMÈDIA I ADJUNTS BASE64 */
+    .attachments-preview {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .attachment-item {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      max-width: 120px;
+      background: #f8fafc;
+    }
+
+    .attachment-item img {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .attachment-item .file-download-btn {
+      display: block;
+      padding: 6px;
+      font-size: 0.75rem;
+      text-align: center;
+      background: var(--secondary);
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ESTILS DEL CALENDARI */
+    .calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .calendar-month-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; background: #edf2f7; padding: 6px; border-radius: 8px; }
+    .calendar-day-header { background: var(--secondary); color: var(--primary); font-weight: 700; text-align: center; padding: 8px 4px; font-size: 0.85rem; border-radius: 4px; }
+    .calendar-day-cell { background: white; min-height: 90px; padding: 6px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; border: 1px solid #e2e8f0; }
+    .calendar-day-cell.other-month { background: #f8fafc; opacity: 0.5; }
+    .calendar-day-cell.today { border: 2px solid var(--accent); background: #f0f7ff; }
+    .calendar-day-num { font-size: 0.8rem; font-weight: 700; color: #4a5568; margin-bottom: 2px; }
+    .calendar-task-item { font-size: 0.72rem; padding: 3px 6px; border-radius: 4px; color: white; font-weight: 600; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .calendar-legend { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; font-size: 0.85rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-box { width: 14px; height: 14px; border-radius: 3px; }
+
+    .st-pendent { background-color: var(--warning); color: #2d3748; }
+    .st-proces { background-color: var(--accent); }
+    .st-bloquejada { background-color: var(--danger); }
+    .st-completada { background-color: var(--success); }
+
+    /* DASHBOARD & MÈTRIQUES */
+    .metric-box { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
+    .metric-value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+    .progress-bar-container { background: #edf2f7; height: 16px; border-radius: 8px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.4s ease; }
+    .filter-bar { background: #edf2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+
+    /* SEVERITAT DE RISCOS */
+    .badge-sev-baixa { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .badge-sev-mitjana { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .badge-sev-alta { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    /* TOASTS DE NOTIFICACIÓ */
+    #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+    .toast { min-width: 250px; padding: 12px 16px; border-radius: var(--radius); color: white; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; }
+    .toast-success { background: var(--success); }
+    .toast-info { background: var(--accent); }
+    .toast-danger { background: var(--danger); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>Quadern Digital de Projecte</h1>
+      <div class="subtitle">Enginyeria Biomèdica | Universitat Oberta de Catalunya (UOC)</div>
+    </div>
+    <!-- Indicador visual de desat automàtic local -->
+    <div class="save-status-badge">
+      <div id="save-status-dot" class="status-dot"></div>
+      <span id="save-status-text">Canvis desats a localStorage</span>
+    </div>
+  </header>
+
+  <div class="banner-privacy">
+    ⚠️ <strong>AVÍS DE PRIVADESA I SEGURETAT:</strong> Aquest és un entorn de quadern de camp acadèmic. Queda strictly prohibit introduir dades sensibles, confidencials o dades reals de pacients.
+  </div>
+
+  <div class="container">
+    <nav>
+      <button class="nav-btn active" onclick="showTab('info')">📋 Informació General</button>
+      <button class="nav-btn" onclick="showTab('diari')">📖 Diari del Projecte</button>
+      <button class="nav-btn" onclick="showTab('tasques')">☑️ Gestió de Tasques</button>
+      <button class="nav-btn" onclick="showTab('riscos')">⚠️ Control de Riscos</button>
+      <button class="nav-btn" onclick="showTab('calendari')">📅 Calendari de treball</button>
+      <button class="nav-btn" onclick="showTab('dashboard')">📊 Seguiment i Indicadors</button>
+      <button class="nav-btn" onclick="showTab('historial')">📜 Historial de Canvis</button>
+      <button class="nav-btn" onclick="showTab('dades')">💾 Dades (Exportar/Importar)</button>
+    </nav>
+
+    <!-- 1. INFORMACIÓ GENERAL -->
+    <div id="tab-info" class="tab-content active">
+      <div class="card">
+        <h2>Dades Generals del Projecte</h2>
+        <div class="grid-3">
+          <div class="form-group">
+            <label>Nom del Projecte</label>
+            <input type="text" id="proj-nom" placeholder="Ex: Disseny d'un biosensor EEG lleuger" onchange="guardarInfoGeneral()">
+          </div>
+          <div class="form-group">
+            <label>Assignatura</label>
+            <input type="text" id="proj-assignatura" placeholder="Ex: Projecte d'Enginyeria Biomèdica" onchange="guardarInfoGeneral()">
+          </div>
+          <div class="form-group">
+            <label>Professora / Professor</label>
+            <input type="text" id="proj-professora" placeholder="Nom del docent" onchange="guardarInfoGeneral()">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="guardarInfoGeneral()">Desar Dades Generals</button>
+      </div>
+
+      <div class="card">
+        <h2>Equip de Treball</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 15px; color: #4a5568;">
+          Membres de l'equip de treball del projecte. Podeu afegir nous integrants i editar el seu correu UOC.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom i Cognoms</th>
+              <th>Rol al Projecte</th>
+              <th>Correu UOC</th>
+              <th>Accions</th>
+            </tr>
+          </thead>
+          <tbody id="taula-equip">
+            <!-- Càrrega dinàmica -->
+          </tbody>
+        </table>
+        <div style="margin-top: 15px;">
+          <button class="btn btn-secondary btn-sm" onclick="afegirNouMembrePrompt()">+ Afegir Nou Membre</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. DIARI DEL PROJECTE -->
+    <div id="tab-diari" class="tab-content">
+      <div class="card">
+        <h2>Nova Entrada al Diari</h2>
+        <form id="form-diari" onsubmit="guardarEntradaDiari(event)">
+          <input type="hidden" id="diari-id">
+          <div class="grid-3">
+            <div class="form-group">
+              <label>Data i Hora *</label>
+              <input type="datetime-local" id="diari-data" required>
+            </div>
+            <div class="form-group">
+              <label>Autor/a *</label>
+              <select id="diari-autor" required></select>
+            </div>
+            <div class="form-group">
+              <label>Tipus d'Activitat *</label>
+              <select id="diari-tipus" required>
+                <option value="Reunió">Reunió</option>
+                <option value="Investigació">Investigació</option>
+                <option value="Disseny">Disseny</option>
+                <option value="Programació">Programació</option>
+                <option value="Proves de laboratori">Proves de laboratori</option>
+                <option value="Redacció">Redacció</option>
+                <option value="Altres">Altres</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Títol de l'Activitat *</label>
+            <input type="text" id="diari-titol" placeholder="Descripció breu de l'activitat" required>
+          </div>
+
+          <div class="form-group">
+            <label>Què s'ha fet? *</label>
+            <textarea id="diari-descripcio" rows="3" placeholder="Detalla el treball realitzat..." required></textarea>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Decisions preses i justificació</label>
+              <textarea id="diari-decisions" rows="2" placeholder="Quines decisions s'han après i per què?"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Resultats / Conclusions</label>
+              <textarea id="diari-resultats" rows="2" placeholder="Resultats obtinguts..."></textarea>
+            </div>
+          </div>
+
+          <!-- SUPORT PER FITXERS/EVIDÈNCIES I ENLLAÇOS WEB -->
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Adjuntar Fitxer / Evidència Visual (Base64)</label>
+              <input type="file" id="diari-fitxer" accept="image/*,.pdf,.txt" onchange="processarFitxerAdjunt(event)">
+              <div id="preview-fitxer-diari" class="attachments-preview"></div>
+            </div>
+            <div class="form-group">
+              <label>Enllaços externs (Drive, GitHub UOC)</label>
+              <div id="container-enllacos"></div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="afegirCampEnllac()" style="margin-top: 5px;">+ Afegir Enllaç Extern</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Desar Entrada al Diari</button>
+          <button type="button" class="btn btn-secondary" onclick="netejarFormDiari()">Cancel·lar</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Entrades del Diari</h2>
+        <div class="filter-bar">
+          <div class="grid-3">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Cerca de text</label>
+              <input type="text" id="filtre-text" placeholder="Cerca..." oninput="filtrarDiari()">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Filtrar per Autor/a</label>
+              <select id="filtre-autor" onchange="filtrarDiari()">
+                <option value="">Tots els autors</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Filtrar per Tipus</label>
+              <select id="filtre-tipus" onchange="filtrarDiari()">
+                <option value="">Tots els tipus</option>
+                <option value="Reunió">Reunió</option>
+                <option value="Investigació">Investigació</option>
+                <option value="Disseny">Disseny</option>
+                <option value="Programació">Programació</option>
+                <option value="Proves de laboratori">Proves de laboratori</option>
+                <option value="Redacció">Redacció</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="llista-diari"></div>
+      </div>
+    </div>
+
+    <!-- 3. GESTIÓ DE TASQUES AMB KANBAN INTERACTIU (DRAG & DROP) -->
+    <div id="tab-tasques" class="tab-content">
+      <div class="card">
+        <h2>Nova Tasca</h2>
+        <form id="form-tasca" onsubmit="guardarTasca(event)">
+          <input type="hidden" id="tasca-id">
+          <div class="grid-3">
+            <div class="form-group">
+              <label>Descripció de la Tasca *</label>
+              <input type="text" id="tasca-descripcio" placeholder="Quina tasca s'ha de fer?" required>
+            </div>
+            <div class="form-group">
+              <label>Data Límit (Deadline) *</label>
+              <input type="date" id="tasca-limit" required>
+            </div>
+            <div class="form-group">
+              <label>Estat Inicial</label>
+              <select id="tasca-estat">
+                <option value="Pendent">Pendent</option>
+                <option value="En procés">En procés</option>
+                <option value="Bloquejada">Bloquejada</option>
+                <option value="Completada">Completada</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Responsable/s *</label>
+            <div id="container-tasca-responsables" style="display: flex; gap: 15px; flex-wrap: wrap;"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Desar Tasca</button>
+          <button type="button" class="btn btn-secondary" onclick="netejarFormTasca()">Cancel·lar</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Tauler de Tasques (Kanban interactiu - Arrossega les targetes)</h2>
+        <div class="kanban-board">
+          <!-- Columna Pendent -->
+          <div class="kanban-col" id="col-Pendent" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropTask(event, 'Pendent')">
+            <div class="kanban-col-header col-pendent">
+              <span>Pendent</span>
+              <span id="count-pendent" class="badge">0</span>
+            </div>
+            <div id="tasks-pendent"></div>
+          </div>
+
+          <!-- Columna En procés -->
+          <div class="kanban-col" id="col-En procés" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropTask(event, 'En procés')">
+            <div class="kanban-col-header col-proces">
+              <span>En procés</span>
+              <span id="count-proces" class="badge">0</span>
+            </div>
+            <div id="tasks-proces"></div>
+          </div>
+
+          <!-- Columna Bloquejada -->
+          <div class="kanban-col" id="col-Bloquejada" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropTask(event, 'Bloquejada')">
+            <div class="kanban-col-header col-bloquejada">
+              <span>Bloquejada</span>
+              <span id="count-bloquejada" class="badge">0</span>
+            </div>
+            <div id="tasks-bloquejada"></div>
+          </div>
+
+          <!-- Columna Completada -->
+          <div class="kanban-col" id="col-Completada" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dropTask(event, 'Completada')">
+            <div class="kanban-col-header col-completada">
+              <span>Completada</span>
+              <span id="count-completada" class="badge">0</span>
+            </div>
+            <div id="tasks-completada"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. CONTROL DE RISCOS -->
+    <div id="tab-riscos" class="tab-content">
+      <div class="card">
+        <h2>Formular Risc / Incidència</h2>
+        <form id="form-risc" onsubmit="guardarRisc(event)">
+          <input type="hidden" id="risc-id">
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Títol del Risc o Problema *</label>
+              <input type="text" id="risc-titol" placeholder="Ex: Retard en l'arribada del sensor EEG" required>
+            </div>
+            <div class="form-group">
+              <label>Tipus *</label>
+              <select id="risc-tipus" required>
+                <option value="Tècnic">Tècnic</option>
+                <option value="Material/Logística">Material/Logística</option>
+                <option value="Organitzatiu">Organitzatiu</option>
+                <option value="Seguretat">Seguretat</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label>Responsable *</label>
+              <select id="risc-responsable" required></select>
+            </div>
+            <div class="form-group">
+              <label>Probabilitat *</label>
+              <select id="risc-probabilitat" required onchange="actualitzarSeveritatVistaForm()">
+                <option value="Baixa">Baixa</option>
+                <option value="Mitjana">Mitjana</option>
+                <option value="Alta">Alta</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Impacte Esperat *</label>
+              <select id="risc-impacte" required onchange="actualitzarSeveritatVistaForm()">
+                <option value="Baix">Baix</option>
+                <option value="Mitjà">Mitjà</option>
+                <option value="Alt">Alt</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Estat del Risc *</label>
+              <select id="risc-estat" required>
+                <option value="Identificat">Identificat</option>
+                <option value="En mitigació">En mitigació</option>
+                <option value="Ocorregut/Incidència">Ocorregut/Incidència</option>
+                <option value="Resolt">Resolt</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Calcul de Severitat Calculat</label>
+              <div style="padding: 9px 0;">
+                <span id="preview-severitat-badge" class="badge badge-sev-baixa">Baixa</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Pla de Mitigació o Solució *</label>
+            <textarea id="risc-mitigacio" rows="3" placeholder="Accions a realitzar..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Desar Risc/Incidència</button>
+          <button type="button" class="btn btn-secondary" onclick="netejarFormRisc()">Cancel·lar</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Registre i Taula de Riscos</h2>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Títol del Risc</th>
+                <th>Tipus</th>
+                <th>Responsable</th>
+                <th>Probabilitat</th>
+                <th>Impacte</th>
+                <th>Severitat</th>
+                <th>Estat</th>
+                <th>Pla de Mitigació</th>
+                <th>Accions</th>
+              </tr>
+            </thead>
+            <tbody id="taula-riscos"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. CALENDARI DE TREBALL -->
+    <div id="tab-calendari" class="tab-content">
+      <div class="card">
+        <h2>Calendari de Treball</h2>
+        <div class="calendar-controls">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="btn btn-secondary btn-sm" onclick="canviarMesCalendari(-1)">◀ Mes Anterior</button>
+            <button class="btn btn-secondary btn-sm" onclick="anarMesActual()">Avui</button>
+            <button class="btn btn-secondary btn-sm" onclick="canviarMesCalendari(1)">Mes Següent ▶</button>
+          </div>
+          <div class="calendar-month-title" id="calendar-title">Mes Any</div>
+        </div>
+
+        <div class="calendar-grid">
+          <div class="calendar-day-header">Dilluns</div>
+          <div class="calendar-day-header">Dimarts</div>
+          <div class="calendar-day-header">Dimecres</div>
+          <div class="calendar-day-header">Dijous</div>
+          <div class="calendar-day-header">Divendres</div>
+          <div class="calendar-day-header">Dissabte</div>
+          <div class="calendar-day-header">Diumenge</div>
+          <div id="calendar-days-container" style="display: contents;"></div>
+        </div>
+
+        <div class="calendar-legend">
+          <div class="legend-item"><div class="legend-box st-pendent"></div> Pendent</div>
+          <div class="legend-item"><div class="legend-box st-proces"></div> En procés</div>
+          <div class="legend-item"><div class="legend-box st-bloquejada"></div> Bloquejada</div>
+          <div class="legend-item"><div class="legend-box st-completada"></div> Completada</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. SEGUIMENT I INDICADORS (DASHBOARD COMPLETAT) -->
+    <div id="tab-dashboard" class="tab-content">
+      <div class="card">
+        <h2>Progrés Global del Projecte</h2>
+        <div class="grid-3">
+          <div class="metric-box">
+            <div>Percentatge Completat</div>
+            <div class="metric-value" id="dash-progress-pc">0%</div>
+          </div>
+          <div class="metric-box">
+            <div>Total Tasques</div>
+            <div class="metric-value" id="dash-total-tasks">0</div>
+          </div>
+          <div class="metric-box">
+            <div>Entrades al Diari</div>
+            <div class="metric-value" id="dash-total-entries">0</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <label style="font-weight: 600;">Estat Global de les Tasques</label>
+          <div class="progress-bar-container">
+            <div id="dash-bar" class="progress-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Resum de Mètriques Clau</h2>
+        <div class="grid-2">
+          <div>
+            <h3>Distribució de Tasques</h3>
+            <ul id="dash-task-distribution" style="margin-top:10px; padding-left: 20px;"></ul>
+          </div>
+          <div>
+            <h3>Estat dels Riscos</h3>
+            <ul id="dash-risk-distribution" style="margin-top:10px; padding-left: 20px;"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. HISTORIAL DE CANVIS -->
+    <div id="tab-historial" class="tab-content">
+      <div class="card">
+        <h2>Historial d'Activitat i Modificacions</h2>
+        <p style="font-size: 0.85rem; color: #718096; margin-bottom: 15px;">
+          Registre automàtic de totes les opcions de creació, desat i moviment de tasques realitzades en aquest navegador.
+        </p>
+        <ul id="llista-historial" style="padding-left:20px; font-size: 0.9rem; line-height: 1.8;"></ul>
+      </div>
+    </div>
+
+    <!-- 8. GESTIÓ DE DADES (EXPORTACIÓ / IMPORTACIÓ JSON) -->
+    <div id="tab-dades" class="tab-content">
+      <div class="card">
+        <h2>Còpia de Seguretat i Exportació</h2>
+        <p style="font-size:0.9rem; margin-bottom:15px;">
+          Podeu baixar tot el contingut del quadern de camp en format JSON per enviar-lo o desar-lo com a còpia de seguretat externa.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="exportarDadesJSON()">⬇️ Exportar Dades a JSON</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('import-file-input').click()">⬆️ Importar JSON</button>
+          <input type="file" id="import-file-input" style="display:none" accept=".json" onchange="importarDadesJSON(event)">
+          <button class="btn btn-danger" onclick="reiniciarDades()">⚠️ Netejar Totes les Dades Local</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script>
+    /* ==========================================================================
+       1. ESTRUCTURA DE DADES GLOBAL I PERSISTÈNCIA (localStorage)
+       ========================================================================== */
+    const STORAGE_KEY = 'UOC_QUADERN_DIGITAL_DATA_V1';
+
+    let appState = {
+      info: { nom: '', assignatura: '', professora: '' },
+      equip: [
+        { id: 1, nom: 'Estudiant 1', rol: 'Líder de projecte', email: 'estudiant1@uoc.edu' },
+        { id: 2, nom: 'Estudiant 2', rol: 'Desenvolupador/a Hardware', email: 'estudiant2@uoc.edu' }
+      ],
+      diari: [],
+      tasques: [],
+      riscos: [],
+      historial: []
+    };
+
+    let currentCalDate = new Date();
+    let tempBase64File = null;
+
+    window.onload = function() {
+      carregarDeLocalStorage();
+      renderAll();
+      registrarHistorial("S'ha inicialitzat la sessió del Quadern Digital.");
+    };
+
+    function guardarALocalStorage() {
+      const dot = document.getElementById('save-status-dot');
+      const text = document.getElementById('save-status-text');
+      
+      dot.classList.add('saving');
+      text.innerText = "Desant canvis...";
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        setTimeout(() => {
+          dot.classList.remove('saving');
+          text.innerText = "Canvis desats a localStorage";
+        }, 400);
+      } catch (e) {
+        showToast("Error en desar a localStorage", "danger");
+      }
+    }
+
+    function carregarDeLocalStorage() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          appState = JSON.parse(saved);
+        } catch(e) {
+          console.error("Error al carregar JSON local", e);
+        }
+      }
+    }
+
+    function renderAll() {
+      renderInfoGeneral();
+      renderEquip();
+      renderAutorsSelects();
+      renderDiari();
+      renderTasquesKanban();
+      renderRiscos();
+      renderCalendari();
+      renderDashboard();
+      renderHistorial();
+    }
+
+    function registrarHistorial(accio) {
+      const entrada = {
+        data: new Date().toLocaleString('ca-ES'),
+        accio: accio
+      };
+      appState.historial.unshift(entrada);
+      if(appState.historial.length > 50) appState.historial.pop();
+      renderHistorial();
+    }
+
+    /* ==========================================================================
+       2. NAVEGACIÓ I UI
+       ========================================================================== */
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `<span>${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+      container.appendChild(toast);
+      setTimeout(() => { if(toast.parentElement) toast.remove(); }, 3500);
+    }
+
+    /* ==========================================================================
+       3. GESTIÓ D'INFORMACIÓ GENERAL I EQUIP
+       ========================================================================== */
+    function guardarInfoGeneral() {
+      appState.info.nom = document.getElementById('proj-nom').value;
+      appState.info.assignatura = document.getElementById('proj-assignatura').value;
+      appState.info.professora = document.getElementById('proj-professora').value;
+      guardarALocalStorage();
+      showToast("Dades generals actualitzades amb èxit", "success");
+    }
+
+    function renderInfoGeneral() {
+      document.getElementById('proj-nom').value = appState.info.nom || '';
+      document.getElementById('proj-assignatura').value = appState.info.assignatura || '';
+      document.getElementById('proj-professora').value = appState.info.professora || '';
+    }
+
+    function renderEquip() {
+      const tbody = document.getElementById('taula-equip');
+      tbody.innerHTML = '';
+      appState.equip.forEach((m) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${m.nom}</strong></td>
+          <td>${m.rol}</td>
+          <td>${m.email}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="eliminarMembre(${m.id})">Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function afegirNouMembrePrompt() {
+      const nom = prompt("Nom i cognoms del membre:");
+      if (!nom) return;
+      const rol = prompt("Rol al projecte (Ex: Tècnic de programació):") || 'Integrant';
+      const email = prompt("Correu electrònic oficial UOC:") || 'estudiant@uoc.edu';
+
+      appState.equip.push({ id: Date.now(), nom, rol, email });
+      guardarALocalStorage();
+      renderEquip();
+      renderAutorsSelects();
+      registrarHistorial(`S'ha afegit el membre ${nom} a l'equip.`);
+      showToast("S'ha afegit el nou membre", "success");
+    }
+
+    function eliminarMembre(id) {
+      appState.equip = appState.equip.filter(m => m.id !== id);
+      guardarALocalStorage();
+      renderEquip();
+      renderAutorsSelects();
+      showToast("Membre eliminat", "info");
+    }
+
+    function renderAutorsSelects() {
+      const selects = [document.getElementById('diari-autor'), document.getElementById('filtre-autor'), document.getElementById('risc-responsable')];
+      selects.forEach(s => {
+        if(!s) return;
+        const valActual = s.value;
+        s.innerHTML = s.id === 'filtre-autor' ? '<option value="">Tots els autors</option>' : '';
+        appState.equip.forEach(m => {
+          s.innerHTML += `<option value="${m.nom}">${m.nom} (${m.rol})</option>`;
+        });
+        s.value = valActual;
+      });
+
+      // Checkboxes responsables de tasques
+      const containerResp = document.getElementById('container-tasca-responsables');
+      if(containerResp) {
+        containerResp.innerHTML = '';
+        appState.equip.forEach(m => {
+          containerResp.innerHTML += `
+            <label style="font-weight: normal; cursor: pointer;">
+              <input type="checkbox" name="tasca-resp" value="${m.nom}"> ${m.nom}
+            </label>
+          `;
+        });
+      }
+    }
+
+    /* ==========================================================================
+       4. DIARI DEL PROJECTE I FITXERS (BASE64)
+       ========================================================================== */
+    function processarFitxerAdjunt(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        tempBase64File = {
+          nom: file.name,
+          data: e.target.result,
+          tipus: file.type
+        };
+        const prev = document.getElementById('preview-fitxer-diari');
+        if (file.type.startsWith('image/')) {
+          prev.innerHTML = `<div class="attachment-item"><img src="${e.target.result}"><span class="file-download-btn">${file.name}</span></div>`;
+        } else {
+          prev.innerHTML = `<div class="attachment-item"><a class="file-download-btn" href="${e.target.result}" download="${file.name}">💾 ${file.name}</a></div>`;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function afegirCampEnllac() {
+      const container = document.getElementById('container-enllacos');
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex; gap:5px; margin-top:5px;';
+      div.innerHTML = `
+        <input type="text" class="diari-enllac-val" placeholder="https://drive.google.com/...">
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function guardarEntradaDiari(e) {
+      e.preventDefault();
+      const id = document.getElementById('diari-id').value || Date.now();
+      const data = document.getElementById('diari-data').value;
+      const autor = document.getElementById('diari-autor').value;
+      const tipus = document.getElementById('diari-tipus').value;
+      const titol = document.getElementById('diari-titol').value;
+      const descripcio = document.getElementById('diari-descripcio').value;
+      const decisions = document.getElementById('diari-decisions').value;
+      const resultats = document.getElementById('diari-resultats').value;
+
+      const enllacos = Array.from(document.querySelectorAll('.diari-enllac-val')).map(i => i.value).filter(v => v.trim() !== '');
+
+      const entrada = {
+        id, data, autor, tipus, titol, descripcio, decisions, resultats,
+        enllacos,
+        adjunt: tempBase64File
+      };
+
+      const idx = appState.diari.findIndex(item => item.id == id);
+      if (idx >= 0) {
+        appState.diari[idx] = entrada;
+        registrarHistorial(`S'ha editat l'entrada del diari: "${titol}".`);
+      } else {
+        appState.diari.unshift(entrada);
+        registrarHistorial(`S'ha afegit una nova entrada al diari: "${titol}".`);
+      }
+
+      guardarALocalStorage();
+      renderDiari();
+      renderDashboard();
+      netejarFormDiari();
+      showToast("Entrada desada correctament", "success");
+    }
+
+    function renderDiari() {
+      const container = document.getElementById('llista-diari');
+      container.innerHTML = '';
+
+      if (appState.diari.length === 0) {
+        container.innerHTML = '<p style="color:#718096;">No hi ha cap entrada enregistrada al diari.</p>';
+        return;
+      }
+
+      appState.diari.forEach(e => {
+        const div = document.createElement('div');
+        div.className = 'entry-card';
+
+        let fileHtml = '';
+        if (e.adjunt) {
+          if (e.adjunt.tipus && e.adjunt.tipus.startsWith('image/')) {
+            fileHtml = `<div class="attachments-preview"><div class="attachment-item"><img src="${e.adjunt.data}"><a class="file-download-btn" href="${e.adjunt.data}" download="${e.adjunt.nom}">🔍 Descarregar</a></div></div>`;
+          } else {
+            fileHtml = `<div class="attachments-preview"><div class="attachment-item"><a class="file-download-btn" href="${e.adjunt.data}" download="${e.adjunt.nom}">📄 ${e.adjunt.nom}</a></div></div>`;
+          }
+        }
+
+        let linksHtml = '';
+        if (e.enllacos && e.enllacos.length > 0) {
+          linksHtml = '<div style="margin-top:5px; font-size:0.85rem;"><strong>Enllaços:</strong> ' + e.enllacos.map(l => `<a href="${l}" target="_blank">${l}</a>`).join(', ') + '</div>';
+        }
+
+        div.innerHTML = `
+          <div class="entry-header">
+            <span class="entry-title">${e.titol}</span>
+            <span class="badge badge-activity">${e.tipus}</span>
+          </div>
+          <div class="entry-meta">
+            <span>📅 ${new Date(e.data).toLocaleString('ca-ES')}</span>
+            <span>👤 ${e.autor}</span>
+          </div>
+          <p><strong>Descripció:</strong> ${e.descripcio}</p>
+          ${e.decisions ? `<p style="margin-top:5px;"><strong>Decisions:</strong> ${e.decisions}</p>` : ''}
+          ${e.resultats ? `<p style="margin-top:5px;"><strong>Resultats:</strong> ${e.resultats}</p>` : ''}
+          ${fileHtml}
+          ${linksHtml}
+          <div style="margin-top:10px; text-align:right;">
+            <button class="btn btn-danger btn-sm" onclick="eliminarEntradaDiari(${e.id})">Eliminar</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function netejarFormDiari() {
+      document.getElementById('form-diari').reset();
+      document.getElementById('diari-id').value = '';
+      document.getElementById('container-enllacos').innerHTML = '';
+      document.getElementById('preview-fitxer-diari').innerHTML = '';
+      tempBase64File = null;
+    }
+
+    function eliminarEntradaDiari(id) {
+      appState.diari = appState.diari.filter(e => e.id != id);
+      guardarALocalStorage();
+      renderDiari();
+      renderDashboard();
+      showToast("Entrada eliminada", "info");
+    }
+
+    function filtrarDiari() {
+      const txt = document.getElementById('filtre-text').value.toLowerCase();
+      const autor = document.getElementById('filtre-autor').value;
+      const tipus = document.getElementById('filtre-tipus').value;
+
+      const cards = document.querySelectorAll('#llista-diari .entry-card');
+      cards.forEach((card, i) => {
+        const item = appState.diari[i];
+        if(!item) return;
+        const matchTxt = item.titol.toLowerCase().includes(txt) || item.descripcio.toLowerCase().includes(txt);
+        const matchAutor = autor === '' || item.autor === autor;
+        const matchTipus = tipus === '' || item.tipus === tipus;
+
+        card.style.display = (matchTxt && matchAutor && matchTipus) ? 'block' : 'none';
+      });
+    }
+
+    /* ==========================================================================
+       5. GESTIÓ DE TASQUES AMB KANBAN INTERACTIU (DRAG & DROP)
+       ========================================================================== */
+    function guardarTasca(e) {
+      e.preventDefault();
+      const id = document.getElementById('tasca-id').value || Date.now();
+      const descripcio = document.getElementById('tasca-descripcio').value;
+      const limit = document.getElementById('tasca-limit').value;
+      const estat = document.getElementById('tasca-estat').value;
+
+      const respBoxes = document.querySelectorAll('input[name="tasca-resp"]:checked');
+      const responsables = Array.from(respBoxes).map(b => b.value);
+
+      if (responsables.length === 0) {
+        showToast("Seleccioneu com a mínim un responsable", "warning");
+        return;
+      }
+
+      const tasca = { id, descripcio, limit, estat, responsables };
+
+      const idx = appState.tasques.findIndex(t => t.id == id);
+      if (idx >= 0) {
+        appState.tasques[idx] = tasca;
+      } else {
+        appState.tasques.push(tasca);
+      }
+
+      guardarALocalStorage();
+      renderTasquesKanban();
+      renderDashboard();
+      renderCalendari();
+      netejarFormTasca();
+      registrarHistorial(`Tasca guardada: "${descripcio}".`);
+      showToast("Tasca desar-se correctament", "success");
+    }
+
+    function renderTasquesKanban() {
+      const estats = ['Pendent', 'En procés', 'Bloquejada', 'Completada'];
+      estats.forEach(estat => {
+        const key = estat.toLowerCase().replace(' ', '').replace('é', 'e');
+        const container = document.getElementById('tasks-' + key);
+        const countBadge = document.getElementById('count-' + key);
+        if(!container) return;
+
+        container.innerHTML = '';
+        const fitradas = appState.tasques.filter(t => t.estat === estat);
+        countBadge.innerText = fitradas.length;
+
+        fitradas.forEach(t => {
+          const div = document.createElement('div');
+          div.className = `task-card task-${key}`;
+          div.draggable = true;
+          div.ondragstart = (e) => dragStart(e, t.id);
+
+          div.innerHTML = `
+            <div class="task-title">${t.descripcio}</div>
+            <div class="task-meta">📅 ${t.limit} | 👤 ${t.responsables.join(', ')}</div>
+            <div style="text-align:right;">
+              <button class="btn btn-danger btn-sm" style="padding:2px 6px; font-size:0.75rem;" onclick="eliminarTasca(${t.id})">Eliminar</button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+
+    /* ESDEVENIMENTS DE DRAG AND DROP NATIUS HTML5 */
+    function dragStart(e, taskId) {
+      e.dataTransfer.setData('text/plain', taskId);
+      e.target.classList.add('dragging');
+    }
+
+    function allowDrop(e) {
+      e.preventDefault();
+    }
+
+    function dragEnter(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function dragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function dropTask(e, nouEstat) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      const taskId = e.dataTransfer.getData('text/plain');
+
+      const tasca = appState.tasques.find(t => t.id == taskId);
+      if (tasca && tasca.estat !== nouEstat) {
+        const estatAnterior = tasca.estat;
+        tasca.estat = nouEstat;
+        guardarALocalStorage();
+        renderTasquesKanban();
+        renderDashboard();
+        renderCalendari();
+        registrarHistorial(`Tasca "${tasca.descripcio}" moguda de ${estatAnterior} a ${nouEstat}.`);
+        showToast(`Tasca moguda a ${nouEstat}`, "info");
+      }
+    }
+
+    function netejarFormTasca() {
+      document.getElementById('form-tasca').reset();
+      document.getElementById('tasca-id').value = '';
+    }
+
+    function eliminarTasca(id) {
+      appState.tasques = appState.tasques.filter(t => t.id != id);
+      guardarALocalStorage();
+      renderTasquesKanban();
+      renderDashboard();
+      renderCalendari();
+      showToast("Tasca eliminada", "info");
+    }
+
+    /* ==========================================================================
+       6. CONTROL DE RISCOS
+       ========================================================================== */
+    function calcularSeveritat(prob, imp) {
+      if (prob === 'Alta' && imp === 'Alt') return 'Alta';
+      if (prob === 'Alta' || imp === 'Alt') return 'Mitjana';
+      return 'Baixa';
+    }
+
+    function actualitzarSeveritatVistaForm() {
+      const prob = document.getElementById('risc-probabilitat').value;
+      const imp = document.getElementById('risc-impacte').value;
+      const sev = calcularSeveritat(prob, imp);
+      const badge = document.getElementById('preview-severitat-badge');
+      badge.className = `badge badge-sev-${sev.toLowerCase()}`;
+      badge.innerText = sev;
+    }
+
+    function guardarRisc(e) {
+      e.preventDefault();
+      const id = document.getElementById('risc-id').value || Date.now();
+      const titol = document.getElementById('risc-titol').value;
+      const tipus = document.getElementById('risc-tipus').value;
+      const responsable = document.getElementById('risc-responsable').value;
+      const probabilitat = document.getElementById('risc-probabilitat').value;
+      const impacte = document.getElementById('risc-impacte').value;
+      const estat = document.getElementById('risc-estat').value;
+      const mitigacio = document.getElementById('risc-mitigacio').value;
+
+      const severitat = calcularSeveritat(probabilitat, impacte);
+
+      const risc = { id, titol, tipus, responsable, probabilitat, impacte, severitat, estat, mitigacio };
+
+      const idx = appState.riscos.findIndex(r => r.id == id);
+      if (idx >= 0) {
+        appState.riscos[idx] = risc;
+      } else {
+        appState.riscos.push(risc);
+      }
+
+      guardarALocalStorage();
+      renderRiscos();
+      renderDashboard();
+      netejarFormRisc();
+      registrarHistorial(`Risc registrat: "${titol}".`);
+      showToast("Risc desat amb èxit", "success");
+    }
+
+    function renderRiscos() {
+      const tbody = document.getElementById('taula-riscos');
+      tbody.innerHTML = '';
+
+      appState.riscos.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${r.titol}</strong></td>
+          <td>${r.tipus}</td>
+          <td>${r.responsable}</td>
+          <td>${r.probabilitat}</td>
+          <td>${r.impacte}</td>
+          <td><span class="badge badge-sev-${r.severitat.toLowerCase()}">${r.severitat}</span></td>
+          <td>${r.estat}</td>
+          <td>${r.mitigacio}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="eliminarRisc(${r.id})">Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function netejarFormRisc() {
+      document.getElementById('form-risc').reset();
+      document.getElementById('risc-id').value = '';
+      actualitzarSeveritatVistaForm();
+    }
+
+    function eliminarRisc(id) {
+      appState.riscos = appState.riscos.filter(r => r.id != id);
+      guardarALocalStorage();
+      renderRiscos();
+      renderDashboard();
+      showToast("Risc eliminat", "info");
+    }
+
+    /* ==========================================================================
+       7. CALENDARI DE TREBALL
+       ========================================================================== */
+    function renderCalendari() {
+      const container = document.getElementById('calendar-days-container');
+      const title = document.getElementById('calendar-title');
+      if(!container) return;
+
+      container.innerHTML = '';
+      const year = currentCalDate.getFullYear();
+      const month = currentCalDate.getMonth();
+
+      const mesos = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Jost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
+      title.innerText = `${mesos[month]} ${year}`;
+
+      const primerDia = new Date(year, month, 1);
+      const ultimDia = new Date(year, month + 1, 0);
+
+      let diaSetmanaInicial = primerDia.getDay() - 1;
+      if (diaSetmanaInicial === -1) diaSetmanaInicial = 6; // Ajust per a diumenge
+
+      // Dies mes anterior
+      for (let i = 0; i < diaSetmanaInicial; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day-cell other-month';
+        container.appendChild(cell);
+      }
+
+      // Dies mes actual
+      const avui = new Date();
+      for (let day = 1; day <= ultimDia.getDate(); day++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day-cell';
+        
+        if (day === avui.getDate() && month === avui.getMonth() && year === avui.getFullYear()) {
+          cell.classList.add('today');
+        }
+
+        cell.innerHTML = `<div class="calendar-day-num">${day}</div>`;
+
+        // data format YYYY-MM-DD
+        const dataStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        
+        // Cerca tasques per deadline
+        const tasquesDia = appState.tasques.filter(t => t.limit === dataStr);
+        tasquesDia.forEach(t => {
+          const key = t.estat.toLowerCase().replace(' ', '').replace('é', 'e');
+          const tDiv = document.createElement('div');
+          tDiv.className = `calendar-task-item st-${key}`;
+          tDiv.innerText = t.descripcio;
+          cell.appendChild(tDiv);
+        });
+
+        container.appendChild(cell);
+      }
+    }
+
+    function canviarMesCalendari(delta) {
+      currentCalDate.setMonth(currentCalDate.getMonth() + delta);
+      renderCalendari();
+    }
+
+    function anarMesActual() {
+      currentCalDate = new Date();
+      renderCalendari();
+    }
+
+    /* ==========================================================================
+       8. DASHBOARD I SEGUIMENT
+       ========================================================================== */
+    function renderDashboard() {
+      const totalTasques = appState.tasques.length;
+      const completades = appState.tasques.filter(t => t.estat === 'Completada').length;
+      const percent = totalTasques > 0 ? Math.round((completades / totalTasques) * 100) : 0;
+
+      document.getElementById('dash-progress-pc').innerText = `${percent}%`;
+      document.getElementById('dash-total-tasks').innerText = totalTasques;
+      document.getElementById('dash-total-entries').innerText = appState.diari.length;
+      document.getElementById('dash-bar').style.width = `${percent}%`;
+
+      // Distribució de tasques
+      const listTask = document.getElementById('dash-task-distribution');
+      if (listTask) {
+        listTask.innerHTML = `
+          <li>Pendent: ${appState.tasques.filter(t=>t.estat==='Pendent').length}</li>
+          <li>En procés: ${appState.tasques.filter(t=>t.estat==='En procés').length}</li>
+          <li>Bloquejada: ${appState.tasques.filter(t=>t.estat==='Bloquejada').length}</li>
+          <li>Completada: ${completades}</li>
+        `;
+      }
+
+      // Distribució de riscos
+      const listRisk = document.getElementById('dash-risk-distribution');
+      if (listRisk) {
+        listRisk.innerHTML = `
+          <li>Total Riscos: ${appState.riscos.length}</li>
+          <li>Alta Severitat: ${appState.riscos.filter(r=>r.severitat==='Alta').length}</li>
+          <li>Resolts: ${appState.riscos.filter(r=>r.estat==='Resolt').length}</li>
+        `;
+      }
+    }
+
+    /* ==========================================================================
+       9. HISTORIAL I EXPORTACIÓ DE DADES
+       ========================================================================== */
+    function renderHistorial() {
+      const container = document.getElementById('llista-historial');
+      if(!container) return;
+      container.innerHTML = '';
+      appState.historial.forEach(h => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>[${h.data}]</strong> ${h.accio}`;
+        container.appendChild(li);
+      });
+    }
+
+    function exportarDadesJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `Quadern_Digital_UOC_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Còpia de seguretat exportada en JSON", "success");
+    }
+
+    function importarDadesJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const importedData = JSON.parse(evt.target.result);
+          if (importedData.info && importedData.equip) {
+            appState = importedData;
+            guardarALocalStorage();
+            renderAll();
+            registrarHistorial("S'ha importat un fitxer JSON de dades.");
+            showToast("Dades importades amb èxit!", "success");
+          } else {
+            showToast("El fitxer JSON no té una estructura vàlida", "danger");
+          }
+        } catch(err) {
+          showToast("Error en llegir el fitxer JSON", "danger");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function reiniciarDades() {
+      if (confirm("Esteu segur que voleu esborrar TOTES les dades del quadern de camp local?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>
